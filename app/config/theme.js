@@ -7,8 +7,9 @@ export const lightTheme = {
     ...DefaultTheme.colors,
     primary: '#3498db',
     accent: '#f1c40f',
-    background: '#d9d9d9',
+    background: '#fff',
     text: '#333333',
+    secondaryContainer : 'gold'
   },
 };
 
@@ -21,5 +22,6 @@ export const darkTheme = {
     accent: '#f1c40f',
     background: '#1a1a1a',
     text: '#ffffff',
+    secondaryContainer : 'gold'
   },
 };
