@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useContext } from 'react';
 import {
   View,
   StyleSheet,
@@ -14,10 +14,12 @@ import {
   Provider as PaperProvider,
 } from "react-native-paper";
 import { PagerView } from "react-native-pager-view";
+import themeContext from "../config/themeContext";
 
-//import theme from "../config/theme";
-
-const ActiveRoute = () => (
+const ActiveRoute = () => {
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme);  
+  return(
   <ScrollView>
     <View>
       <View style={styles.ticket}>
@@ -31,17 +33,15 @@ const ActiveRoute = () => (
         </View>
         <Divider style={{ marginVertical: 10 }} />
         <View style={styles.qr}>
-          <Text style={{ marginBottom: 10 }}>27 March 2023, 03:33:33 PM</Text>
+          <Text style={styles.qrDate}>27 March 2023, 03:33:33 PM</Text>
           <Image source={require("../assets/qr.png")} />
         </View>
       </View>
 
       <View style={styles.ticket}>
         <View>
-          <Text style={{ fontSize: 25, fontWeight: "bold" }}>
-            Single Journey Ticket
-          </Text>
           <View>
+          <Text style={styles.title}>Single Journey Ticket</Text>
             <Text style={styles.text}>GA - 03 - X - 1111</Text>
             <Text style={styles.text}>Old Bus Stand - Ponda</Text>
             <Text style={styles.text}>KTC Bus Stand - Panaji</Text>
@@ -51,15 +51,20 @@ const ActiveRoute = () => (
         </View>
         <Divider style={{ marginVertical: 10 }} />
         <View style={styles.qr}>
-          <Text style={{ marginBottom: 10 }}>28 March 2023, 07:12:11 PM</Text>
+          <Text style={styles.qrDate}>28 March 2023, 07:12:11 PM</Text>
           <Image source={require("../assets/qr.png")} />
         </View>
       </View>
     </View>
   </ScrollView>
 );
+}
 
-const ExpiredRoute = () => (
+const ExpiredRoute = () => {
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme);
+
+  return(
   <ScrollView>
     <View>
       <View style={styles.ticket}>
@@ -73,17 +78,22 @@ const ExpiredRoute = () => (
         </View>
         <Divider style={{ marginVertical: 10 }} />
         <View style={styles.qr}>
-          <Text style={{ marginBottom: 10 }}>27 March 2023, 03:33:33 PM</Text>
+          <Text style={styles.qrDate}>27 March 2023, 03:33:33 PM</Text>
           <Image source={require("../assets/qr.png")} />
         </View>
       </View>
     </View>
   </ScrollView>
-);
+  );
+}
 
 const initialLayout = { width: Dimensions.get("window").width };
 
 export default function Tickets() {
+
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme);
+
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: "active", title: "Active" },
@@ -118,26 +128,29 @@ export default function Tickets() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme) =>
+StyleSheet.create({
   scene: {
     flex: 1,
   },
   tabBar: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.background,
   },
   indicator: {
     backgroundColor: 'gold',
   },
   label: {
-    color: "#000",
+    color: theme.color,
     fontWeight: "bold",
   },
   title: {
     fontSize: 25,
     fontWeight: "bold",
+    color: theme.color,
   },
   text: {
     fontSize: 18,
+    color: theme.color,
   },
   ticket: {
     borderColor: "gray",
@@ -146,8 +159,14 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 9,
     marginVertical: 10,
+    color: theme.color,
   },
   qr: {
     alignItems: "center",
+    color: theme.color,
   },
+  qrDate: {
+  marginBottom: 10,
+  color: theme.color,
+  }
 });

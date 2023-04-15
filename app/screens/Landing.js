@@ -1,17 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { BottomNavigation, Text } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { usefonts } from 'expo-font';
+import themeContext from "../config/themeContext";
 
 import Home from './Home';
-import Welcome from './Welcome';
-import Login from './Login';
-import Register from './Register';
 import Map from './Map';
 import Route from './Route';
 import Account from './Account';
+import { Easing } from 'react-native';
 
 const HomeRoute = () => <Home />;
 const MapRoute = () => <Map />;
@@ -35,21 +32,27 @@ const BottomNavBar = () => {
     account: AccountRoute,
   });
 
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme);
+
   return (
     <BottomNavigation
       navigationState={{ index, routes }}
       onIndexChange={setIndex}
       renderScene={renderScene}
       barStyle={styles.bottomNavBar}
-      shifting={false}
+      sceneAnimationEnabled = {true}
+      sceneAnimationType = {'shifting'}
+      theme={theme}
     />
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme) =>
+StyleSheet.create({
   bottomNavBar: {
-    backgroundColor: '#e8e8e8',
-    marginBottom: -10,
+    marginBottom: -9,
+    activeColor: theme.primary,
   },
 });
 

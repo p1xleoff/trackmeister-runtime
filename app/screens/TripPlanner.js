@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Dimensions,
   Text,
-  Image,
   ScrollView,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";

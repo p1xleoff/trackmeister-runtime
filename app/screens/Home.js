@@ -1,64 +1,55 @@
-import React from 'react';
-import { StyleSheet, View, Pressable, Text, StatusBar, Dimensions} from 'react-native';
-
-import { useNavigation } from '@react-navigation/native';
-
-import { Searchbar } from 'react-native-paper';
-import { Appbar } from 'react-native-paper';
+import React, { useContext } from 'react';
+import { StyleSheet, View, Text} from 'react-native';
+;
 
 //import theme from '../config/theme';
-import HeaderUlt from '../components/HeaderUlt';
-//import BottomNavBar from '../components/BottomTry';
+import SearchBar from '../components/SearchBar';
+import themeContext from "../config/themeContext";
 
 
 const Home = () => {
-  
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const onChangeSearch = query => setSearchQuery(query);
-  
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme);
 
-return (
-  <View style={styles.container}>
-    <HeaderUlt />
+  return ( 
+    <View style={styles.container}>
+    <SearchBar />
+      <Text style={styles.topText}>Nearby Stops</Text>
+    <View style={styles.textContainer}>
       <View>
-        <Text style={styles.topText}>Nearby Stops</Text>
-        <View style={styles.textContainer}>
-      <View>
-        <Text style={styles.text}>Your nearby stops appear here</Text>
-      </View>
-    </View>
-      </View>
-      <View>
-        <Text style={styles.topText}>Pinned Stops</Text>
-        <View style={styles.textContainer}>
-      <View>
-        <Text style={styles.text}>Your pinned stops appear here</Text>
-      </View>
-    </View>
+        <Text style={styles.text}>Your created routes appear here</Text>
       </View>
   </View>
-
+</View>
   );
-};
+}
 
-const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: '5%',
-  },
-  topText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginVertical: 15, 
-  },
-  textContainer: {
-    borderWidth: 1,
-    borderRadius: 9,
-    height: 100,
-},
-  text: {
-    fontSize: 16,
-    margin: 10,
-},
+const getStyles = (theme) => 
+  StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: theme.background,
+        color: theme.color,
+    },
+    topText: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginVertical: 15,
+        color: theme.color,
+        marginHorizontal: '5%'
+    },
+    textContainer: {
+        borderWidth: 1,
+        borderRadius: 9,
+        height: 100,
+        borderColor: theme.color,
+        marginHorizontal: '5%'
+    },
+    text: {
+        fontSize: 16,
+        margin: 10,
+        color: theme.color,
+    },
 })
 
 export default Home;

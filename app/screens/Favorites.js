@@ -1,30 +1,23 @@
-import React from "react";
-import { StatusBar } from "react-native";
+import React, { useContext } from "react";
 import { StyleSheet, View, Text } from "react-native"; 
 import {
-    Avatar,
-    Divider,
     List,
-    Modal,
-    Portal,
-    RadioButton,
     useTheme
   } from "react-native-paper";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-import { PreferencesContext } from "../config/PreferencesContext";
+import themeContext from "../config/themeContext";
   
 function Favorites() {
     const navigation = useNavigation();
     const toDemap = () => {
       navigation.navigate("Demap");
     }; 
-    const theme = useTheme();
-    const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext); 
+      const theme = useContext(themeContext); 
     return ( 
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: theme.background}]}>
       <Text style={styles.title}>Locations</Text>
       <View style={styles.item}>
           <List.Item

@@ -18,6 +18,7 @@ import { PagerView } from "react-native-pager-view";
 import MapView, { Marker } from "react-native-maps";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import themeContext from "../config/themeContext";
 
 //import theme from "../config/theme";
 

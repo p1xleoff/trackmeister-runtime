@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, View, Text, Pressable, StatusBar, TouchableNativeFeedback, Image } from "react-native";
-import MapView, { Marker } from "react-native-maps";
 import {
   Avatar,
   Divider,
@@ -14,10 +13,9 @@ import {
 } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { EventRegister } from "react-native-event-listeners";
 
-import HeaderUlt from "../components/HeaderUlt";
-import { PreferencesContext } from "../config/PreferencesContext";
-import { lightTheme, darkTheme } from "../config/theme";
+import themeContext from "../config/themeContext";
 
 function Account() {
   //theme modal
@@ -47,11 +45,14 @@ function Account() {
 
   //theme radio button
   const [value, setValue] = React.useState("first");
-  const theme = useTheme();
-  const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext);
-  
+  const theme = useContext(themeContext);
+
+  const [ mode, setMode ]  = useState(false);
+
+  const styles = getStyles(theme);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: theme.background}]}>
       <View style={styles.accountContainer}>
         <Avatar.Icon style={styles.accountIcon} size={75} icon="account" />
         <View style={styles.accountHeader}>
@@ -129,29 +130,24 @@ function Account() {
             )}
           />
         </View>
-
-        <View style={styles.item}>
+        <View>
           <Portal>
             <Modal
               visible={visible}
               onDismiss={hideModal}
-              contentContainerStyle={styles.themeModal}
-            >
+              contentContainerStyle={styles.themeModal}>
               <Text style={styles.headerText}>Choose Theme</Text>
-              <View>
-                <RadioButton.Group
-                  onValueChange={(newValue) => setValue(newValue)}
-                  value={value}
-                >
-                  <RadioButton.Item label="System(auto)" value="auto" />
-                  <RadioButton.Item label="Light" value="light" />
-                  <RadioButton.Item label="Dark" value="dark" />
-                </RadioButton.Group>
-                <Switch
-                color={'red'}
-                value={isThemeDark}
-                onValueChange={toggleTheme}
-          />
+              <View style={[styles.aboutContainer, {justifyContent: "space-between"}]}>
+              <Text style={styles.aboutText}>
+                Dark Mode
+              </Text>
+              <Switch
+              color={'#ffbf00'}
+              value={mode}
+              onValueChange={(value) => {
+              setMode(value);
+              EventRegister.emit("changeTheme", value)
+            }}/>
               </View>
             </Modal>
           </Portal>
@@ -173,8 +169,7 @@ function Account() {
             <Modal
               visible={aboutVisible}
               contentContainerStyle={styles.themeModal}
-              onDismiss={hideAboutModal}
-            > 
+              onDismiss={hideAboutModal}> 
               <View style={styles.aboutContainer}>
               <Image style={styles.logo} source={require('../assets/logo.png')} />
               <Text style={styles.headerText}>Trackmeister</Text>
@@ -182,8 +177,7 @@ function Account() {
               <Text style={styles.aboutText}>
                 For Kadamba Transport Corporation Limited
               </Text>
-              <Text style={styles.aboutText}>Build: 0.1.0 Dev</Text>
-              
+              <Text style={styles.aboutText}>Build: 0.1.0 Dev</Text> 
               <View style={styles.buttonContainer}>
                 <Button onPress={hideAboutModal} style={styles.button} labelStyle={styles.buttonText}>
                   GITHUB
@@ -208,30 +202,34 @@ function Account() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => 
+StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight,
   },
   accountContainer: {
     flexDirection: "row",
     alignItems: "center",
-    margin: "5%",
+    marginLeft: "5%",
+    marginTop: '10%',
+    marginBottom: '5%',
   },
   accountHeader: {
     justifyContent: "center",
   },
   accountIcon: {
     marginRight: 15,
-    backgroundColor: "black",
+    backgroundColor: theme.color,
   },
   headerText: {
     fontSize: 28,
     fontWeight: "bold",
+    color: theme.color,
   },
   headerNumber: {
     fontSize: 18,
     fontWeight: "bold",
+    color: theme.color,
   },
   item: {
     fontSize: 50,
@@ -240,17 +238,19 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 22,
     fontWeight: "400",
+    color: theme.color,
   },
   themeModal: {
-    backgroundColor: 'white',
+    backgroundColor: theme.modal,
     marginHorizontal: "10%",
     justifyContent: "center",
     padding: 25,
-    borderRadius: 25,
+    borderRadius: 20,
+    color: theme.color,
   },
   icon: {
     fontSize: 24,
-    color: "black",
+    color: theme.color,
     marginLeft: "5%",
   },
   aboutContainer: {
@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    color: theme.color,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -270,7 +271,8 @@ const styles = StyleSheet.create({
   aboutText:  {
     fontSize: 20,
     marginVertical: 5,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: theme.color,
   },
   logo: {
     height: 70,
