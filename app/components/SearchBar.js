@@ -14,7 +14,10 @@ const SearchBar = () => {
   
     return (
       <View style={styles.container}>
-        <Searchbar style={styles.searchBar} placeholder="Search for stops" /> 
+        <Searchbar 
+          style={styles.searchBar} 
+          placeholder="Search for stops"
+          inputStyle={styles.searchInput} /> 
       </View>
     );
   };
@@ -24,18 +27,22 @@ const SearchBar = () => {
     container: {
       flexDirection: 'row',  
       alignItems: 'center',
-      backgroundColor: theme.background,
       marginHorizontal: '5%',
       marginBottom: '5%',
       marginTop: StatusBar.currentHeight + 10,
-      borderRadius: 9,
+      borderRadius: 30,
       elevation: 5,
     },
     searchBar: {
       flex: 1,
-      backgroundColor: '#c4c4c4',
-      borderRadius: 9,
+      borderRadius: 30,
+      color: theme.color,
+      backgroundColor: theme.barColor,
     },  
+    searchInput: {
+      fontSize: 16,
+      color: 'red',
+    },
   })
 
   export default SearchBar;

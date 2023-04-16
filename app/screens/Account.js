@@ -52,7 +52,7 @@ function Account() {
   const styles = getStyles(theme);
 
   return (
-    <View style={[styles.container, {backgroundColor: theme.background}]}>
+    <View style={styles.container}>
       <View style={styles.accountContainer}>
         <Avatar.Icon style={styles.accountIcon} size={75} icon="account" />
         <View style={styles.accountHeader}>
@@ -206,12 +206,13 @@ const getStyles = (theme) =>
 StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: theme.background,
   },
   accountContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginLeft: "5%",
-    marginTop: '10%',
+    marginTop: '15%',
     marginBottom: '5%',
   },
   accountHeader: {

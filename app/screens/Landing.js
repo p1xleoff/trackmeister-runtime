@@ -19,10 +19,10 @@ const AccountRoute = () => <Account />;
 const BottomNavBar = () => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: 'home', title: 'Home', focusedIcon: 'home', unfocusedIcon: 'home'},
-    { key: 'map', title: 'Map', focusedIcon: 'map', unfocusedIcon: 'map' },
+    { key: 'home', title: 'Home', focusedIcon: 'home', unfocusedIcon: 'home-outline'},
+    { key: 'map', title: 'Map', focusedIcon: 'map', unfocusedIcon: 'map-outline' },
     { key: 'route', title: 'Routes', focusedIcon: 'transit-detour', unfocusedIcon: 'transit-detour'},
-    { key: 'account', title: 'Account', focusedIcon: 'account', unfocusedIcon: 'account' },
+    { key: 'account', title: 'Account', focusedIcon: 'account', unfocusedIcon: 'account-outline' },
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
@@ -43,7 +43,9 @@ const BottomNavBar = () => {
       barStyle={styles.bottomNavBar}
       sceneAnimationEnabled = {true}
       sceneAnimationType = {'shifting'}
-      theme={theme}
+      theme={theme}      
+      activeColor='red'
+      inactiveColor='#525252'
     />
   );
 }
@@ -52,7 +54,7 @@ const getStyles = (theme) =>
 StyleSheet.create({
   bottomNavBar: {
     marginBottom: -9,
-    activeColor: theme.primary,
+    backgroundColor: theme.barColor,
   },
 });
 

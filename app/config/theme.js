@@ -4,16 +4,19 @@ const theme = {
     color: 'black',
     background: 'white',
     primary: 'white',
-    barColor: '#242424',
-    modal: '#fff'
+    barColor: '#f2f2f2',
+    modal: '#fff',
+    highlight: '#e3e3e3',
+    secondaryContainer: 'gold'
   },
   dark: {
     theme: 'dark',
     color: 'white',
     background: '#141414',
-    barColor: '#d1d1d1',
+    barColor: '#000',
     primary: 'black',
-    modal: '#000'
+    modal: '#000',
+    highlight: '#2b2b2b',
   }
 }
 

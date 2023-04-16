@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -20,9 +20,11 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import themeContext from "../config/themeContext";
 
-//import theme from "../config/theme";
 
-const ListTab = () => (
+const ListTab = () => {
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme);
+  return (
   <ScrollView>
     <View>
       <View style={styles.titleContainer}>
@@ -151,8 +153,12 @@ const ListTab = () => (
 </View>
   </ScrollView>
 );
+}
 
-const MapTab = () => (
+const MapTab = () => {
+  const theme = useContext(themeContext);
+const styles = getStyles(theme);
+return  (
   <View style={styles.mapContainer}>
   <MapView
     style={styles.map}
@@ -174,10 +180,13 @@ const MapTab = () => (
   </MapView>
 </View>
 );
+}
 
 const initialLayout = { width: Dimensions.get("window").width };
-
 export default function Stops() {
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme);
+
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: "list", title: "List"},
@@ -213,37 +222,24 @@ export default function Stops() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => 
+StyleSheet.create({
   scene: {
     flex: 1,
   },
   tabBar: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.background,
   },
   indicator: {
     backgroundColor: 'gold',
   },
   label: {
-    color: "#000",
-    fontWeight: "bold",
-  },
-  title: {
-    fontSize: 25,
+    color: theme.color,
     fontWeight: "bold",
   },
   text: {
+    color: theme.color,
     fontSize: 18,
-  },
-  ticket: {
-    borderColor: "gray",
-    borderWidth: 1,
-    marginHorizontal: 10,
-    padding: 10,
-    borderRadius: 9,
-    marginVertical: 10,
-  },
-  qr: {
-    alignItems: "center",
   },  
   map: {
     flex: 1,
@@ -255,24 +251,27 @@ const styles = StyleSheet.create({
     fontSize: 50,
     fontWeight: "bold",
     margin: 5,
-},
+  },
   itemText: {
+    color: theme.color,
     fontSize: 22,
     fontWeight: "400",
-},
+  },
   icon: {
+    color: theme.color,
     fontSize: 24,
     marginLeft: 15,
     justifyContent: 'center',
     alignItems: 'center',
-},
-title: {
+  },
+  title: {
   fontSize: 22,
   fontWeight: 'bold',
   margin: 15,
-},
-titleContainer:  {
-  alignContent: 'center',
+  color: theme.color,
+  },
+  titleContainer:  {
+  alignItems: 'center',
   justifyContent: 'center'
-}
+  }
 });

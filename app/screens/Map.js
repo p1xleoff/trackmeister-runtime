@@ -54,9 +54,6 @@ const getStyles = (theme) =>
       left: 0,
       right: 0,
     },
-    searchBar: {
-      marginHorizontal: 16,
-    },
   });
 
 export default Map;

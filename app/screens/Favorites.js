@@ -9,15 +9,17 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 import themeContext from "../config/themeContext";
+import theme from "../config/theme";
   
 function Favorites() {
     const navigation = useNavigation();
     const toDemap = () => {
       navigation.navigate("Demap");
     }; 
-      const theme = useContext(themeContext); 
+      const theme = useContext(themeContext);
+      const styles = getStyles(theme); 
     return ( 
-    <View style={[styles.container, {backgroundColor: theme.background}]}>
+    <View style={styles.container}>
       <Text style={styles.title}>Locations</Text>
       <View style={styles.item}>
           <List.Item
@@ -44,14 +46,18 @@ function Favorites() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme) =>
+StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: theme.background,
     },
     title: {
         fontSize: 22,
         fontWeight: 'bold',
-        margin: 15,
+        marginVertical: 10,
+        marginHorizontal: '5%',
+        color: theme.color,
     },
     textContainer: {
         borderWidth: 1,
@@ -59,21 +65,21 @@ const styles = StyleSheet.create({
         height: 100,
     },
     item: {
-        fontSize: 50,
-        fontWeight: "bold",
-        backgroundColor: '#d6d6d6',
+        backgroundColor: theme.highlight,
         borderWidth: 0,
         borderRadius: 9,
         margin: 5,
-        elevation: 1
+        elevation: 1,
     },
     itemText: {
         fontSize: 22,
         fontWeight: "400",
+        color: theme.color,
     },
     icon: {
-        fontSize: 24,
+        fontSize: 30,
         marginLeft: 15,
+        color: theme.color,
     }
 })
 
