@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useContext } from 'react';
 import {
   View,
   StyleSheet,
@@ -13,17 +13,17 @@ import {
   Provider as PaperProvider,
 } from "react-native-paper";
 import { PagerView } from "react-native-pager-view";
+import themeContext from "../config/themeContext";
 
-//import theme from "../config/theme";
-
-const Current = () => (
+const Current = () => {
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme); 
   <ScrollView>
     <View style={styles.container}>
     <Text style={styles.text}>You have no trips planned</Text>
     </View>
   </ScrollView>
-);
-
+}
 const History = () => (
   <ScrollView>
     <Text></Text>
@@ -33,6 +33,10 @@ const History = () => (
 const initialLayout = { width: Dimensions.get("window").width };
 
 export default function TripPlanner() {
+
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme);  
+
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: "current", title: "Current" },
@@ -65,9 +69,11 @@ export default function TripPlanner() {
       />
     </PaperProvider>
   );
+
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme) =>
+StyleSheet.create({
   scene: {
     flex: 1,
   },
@@ -78,8 +84,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'gold',
   },
   label: {
-    color: "#000",
     fontWeight: "bold",
+    color: theme.color,
   },
   container: {
     flex: 1,
@@ -91,5 +97,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
+    color: theme.color,
   },
 });

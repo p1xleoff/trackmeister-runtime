@@ -17,7 +17,9 @@ const SearchBar = () => {
         <Searchbar 
           style={styles.searchBar} 
           placeholder="Search for stops"
-          inputStyle={styles.searchInput} /> 
+          placeholderTextColor={theme.color}
+          iconColor={theme.color}
+          /> 
       </View>
     );
   };
@@ -36,7 +38,7 @@ const SearchBar = () => {
     searchBar: {
       flex: 1,
       borderRadius: 30,
-      color: theme.color,
+      
       backgroundColor: theme.barColor,
     },  
     searchInput: {

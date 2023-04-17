@@ -160,6 +160,7 @@ StyleSheet.create({
     borderRadius: 9,
     marginVertical: 10,
     color: theme.color,
+    backgroundColor: theme.background,
   },
   qr: {
     alignItems: "center",
