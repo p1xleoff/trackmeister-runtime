@@ -8,7 +8,6 @@ import Home from './Home';
 import Map from './Map';
 import Route from './Route';
 import Account from './Account';
-import { Easing } from 'react-native';
 
 const HomeRoute = () => <Home />;
 const MapRoute = () => <Map />;

@@ -1,61 +1,83 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Pressable, Text } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import React, { useState, useEffect, useContext } from 'react';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
-//import theme from '../config/theme';
+import themeContext from "../config/themeContext";
 
 
 const Login = () => {
-    
-  const [number, setNumber] = useState('');
-  const [password, setPassword] = useState('');
   
-  const handleNumberChange = (number) => {
-    setNumber(number);
-    };
-  
-  const handlePasswordChange = (text) => {
-    setPassword(text);
-  };
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme);
 
-  const handleSubmit = () => {
-    console.log('Submitting form...', { number, password });
-  };
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
   const navigation = useNavigation();
-  const toWelcome = () => {
-    navigation.navigate('Welcome');
-  };
   const toRegister = () => {
     navigation.navigate('Register');
-  };
-  const toLanding = () => {
+  };  
+  const tolanding = () => {
     navigation.navigate('Landing');
   };
+
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+      navigation.replace("Landing")    
+      }
+    });
+  }, [] )
+
+  //logging in
+const handleLogIn = () => {  
+const auth = getAuth();
+signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    // ...
+    console.log('Logged in with: ', user.email);
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
+};
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>LogIn</Text>
       <TextInput
         style={styles.input}
         mode="outlined"
-        label="Phone Number"
-        keyboardType="phone-pad"
-        value={number}
-        onChangeNumber={handleNumberChange}
+        label="Email"
+        textColor={theme.color}
+        outlineColor={theme.accent}
+        activeOutlineColor={theme.accent}
+        value={email}
+        onChangeText={text => setEmail(text)}
       />
       <TextInput
         style={styles.input}
         mode="outlined"
         label="Password"
-        secureTextEntry={true}
         value={password}
-        onChangeText={handlePasswordChange}
+        textColor={theme.color}
+        outlineColor={theme.accent}
+        activeOutlineColor={theme.accent}
+        onChangeText={text => setPassword(text)}
+        secureTextEntry
       />
       <View>
-        <Pressable style={styles.button} onPress={toLanding}>
+        <TouchableOpacity 
+        style={styles.button}
+        onPress={handleLogIn}>
           <Text style={styles.buttonText}>LOG IN</Text>
-        </Pressable>
+        </TouchableOpacity> 
       </View>
       <View style={styles.textWrap}>
         <Text style={styles.text}>
@@ -70,14 +92,15 @@ const Login = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (theme)  =>
+StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: theme.background,
     flex: 1,
     padding: 20,
   },
   input: {
-    backgroundColor: 'white',
+    backgroundColor: theme.background,
     marginBottom: 10,
   },
   button: {
@@ -85,7 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     marginVertical: '10%',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: theme.accent,
     paddingVertical: '3%',
     elevation: 10,
 },  
@@ -101,12 +124,13 @@ const styles = StyleSheet.create({
     fontSize: 66,
     fontWeight: 'bold',
     letterSpacing: 1,
-    color: 'gold',
+    color: theme.accent,
 },
   textWrap: {
     alignItems: 'center',
 },
   text: {
+    color: theme.color,
     fontSize: 20,
   }
 });

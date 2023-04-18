@@ -1,65 +1,79 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Pressable, Text } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { StyleSheet, View, Pressable, Text, TouchableOpacity } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
-//import theme from '../config/theme';
+import themeContext from "../config/themeContext";
 
 const Register = () => {
-  const [number, setNumber] = useState('');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  
-    const handleNumberChange = (number) => {
-      setNumber(number);
-    };
-  
-  const handleNameChange = (text) => {
-    setName(text);
-  };
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme);
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
 
-  const handleEmailChange = (text) => {
-    setEmail(text);
-  };
-
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+      navigation.replace("Landing")    
+      }
+    });
+  }, [] )
+  
   const navigation = useNavigation();
-  const toWelcome = () => {
-    navigation.navigate('Welcome');
-  };
   const toLogin = () => {
     navigation.navigate('Login');
   };
-
+  const tolanding = () => {
+    navigation.navigate('Landing');
+  };
+  //sign up
+  const handleSignUp = () => {
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log('registered with: ', user.email);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorMessage);
+      });
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
       <TextInput
         style={styles.input}
         mode="outlined"
-        label="Phone Number"
-        keyboardType="phone-pad"
-        value={number}
-        onChangeNumber={handleNumberChange}
-      />
-      <TextInput
-        style={styles.input}
-        mode="outlined"
-        label="Name"
-        value={name}
-        onChangeText={handleNameChange}
-      />
-      <TextInput
-        style={styles.input}
-        mode="outlined"
         label="Email"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={handleEmailChange}
+        textColor={theme.color}
+        outlineColor={theme.accent}
+        activeOutlineColor={theme.accent}
+        keyboardType='email-address'
+        onChangeText={text => setEmail(text)}
+      />
+      <TextInput
+        style={styles.input}
+        mode="outlined"
+        label="Password"
+        outlineColor={theme.accent}
+        activeOutlineColor={theme.accent}
+        value={password}
+        textColor={theme.color}
+        onChangeText={text => setPassword(text)}
+        secureTextEntry
       />
       <View>
-        <Pressable style={styles.button} onPress={toLogin}>
+      <TouchableOpacity 
+        style={styles.button}
+        onPress={handleSignUp}>
           <Text style={styles.buttonText}>SIGN UP</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
       <View style={styles.textWrap}>
         <Text style={styles.text}>
@@ -74,23 +88,25 @@ const Register = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (theme) =>
+StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: theme.background,
   },
   input: {
-    backgroundColor: 'white',
+    backgroundColor: theme.background,
     borderRadius: 9,
     marginBottom: 10,
+    color: theme.color,
   },
   button: {
     width: '100%',
     borderRadius: 9,
     marginVertical: '10%',
     alignItems: 'center',
-    backgroundColor: 'gold',
+    backgroundColor: theme.accent,
     paddingVertical: '3%',
     elevation: 5,
 },  
@@ -106,12 +122,13 @@ const styles = StyleSheet.create({
     fontSize: 66,
     fontWeight: 'bold',
     letterSpacing: 1,
-    color: 'gold',
+    color: theme.accent,
 },
   textWrap: {
   alignItems: 'center',
 },
   text: {
+  color: theme.color,
   fontSize: 20,
 }
 

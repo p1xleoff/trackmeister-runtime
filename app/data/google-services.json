@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "193092304144",
+    "project_id": "trackmeister-d2e81",
+    "storage_bucket": "trackmeister-d2e81.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:193092304144:android:706d9a950a05684212b995",
+        "android_client_info": {
+          "package_name": "com.trackmeister"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "193092304144-2bhh9mcf3sbhfkt54ea5cg21kgiohuaf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRwK3oXLETYl-aEveXGh9s5mSzh-GBRn0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "193092304144-2bhh9mcf3sbhfkt54ea5cg21kgiohuaf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

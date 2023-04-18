@@ -1,19 +1,18 @@
 import React, { useState, useContext } from "react";
-import { StyleSheet, View, Text, Pressable, StatusBar, TouchableNativeFeedback, Image } from "react-native";
+import { StyleSheet, View, Text, Image,TouchableOpacity } from "react-native";
 import {
   Avatar,
   Divider,
   List,
   Modal,
   Portal,
-  RadioButton,
   Button,
   Switch,
-  useTheme
 } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { EventRegister } from "react-native-event-listeners";
+import { getAuth, signOut } from 'firebase/auth';
 
 import themeContext from "../config/themeContext";
 
@@ -46,18 +45,28 @@ function Account() {
   //theme radio button
   const [value, setValue] = React.useState("first");
   const theme = useContext(themeContext);
-
+  const styles = getStyles(theme);
   const [ mode, setMode ]  = useState(false);
 
-  const styles = getStyles(theme);
-
+  
+  const auth = getAuth();
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        navigation.replace("Login");
+        console.log('user signed out');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   return (
     <View style={styles.container}>
       <View style={styles.accountContainer}>
         <Avatar.Icon style={styles.accountIcon} size={75} icon="account" />
         <View style={styles.accountHeader}>
-          <Text style={styles.headerText}>Trackmeister</Text>
-          <Text style={styles.headerNumber}>0987654321</Text>
+          <Text style={styles.headerText}>{auth.currentUser?.email}</Text>
+          <TouchableOpacity onPress={handleSignOut}><Text style={styles.headerNumber}>Sign Out</Text></TouchableOpacity>
         </View>
       </View>
       <Divider style={{ backgroundColor: "black", height: 1 }} />
