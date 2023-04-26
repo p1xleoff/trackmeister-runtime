@@ -38,7 +38,7 @@ function Map() {
       });
           // Get bus stop coordinates from API
           if (currentLocationMarker) {
-          const response = await fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${currentLocationMarker.latitude},${currentLocationMarker.longitude}&radius=995&type=bus_station&key=AIzaSyB0EBCZbMVu9ZeD_3WAugs1Uj1HccdsX0g`);
+          const response = await fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${currentLocationMarker.latitude},${currentLocationMarker.longitude}&radius=995&type=bus_station&key=GOOGLE_API_KEY`);
           const data = await response.json();
           setBusStops(data);
           }

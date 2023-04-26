@@ -18,7 +18,7 @@ const Places = () => {
         console.log(data, details);
       }}
       query={{
-        key: 'AIzaSyDtjtCeIVP_FOSDkwYcFHH3yL62VlCwjvA',
+        key: 'GOOGLE_API_KEY',
         language: 'en',
       }}
     />
