@@ -34,19 +34,7 @@ const Login = () => {
 
   //logging in
 const handleLogIn = () => {  
-  if (!email || !password) {
-    Alert.alert('Please enter an email and password');
-    return;
-  }
-  if (!isValidEmail(email)) {
-    Alert.alert('Please enter a valid email address');
-    return;
-  }
 
-  if (!isValidPassword(password)) {
-    Alert.alert('The password must be at least 8 characters long');
-    return;
-  }
 const auth = getAuth();
 signInWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
@@ -59,15 +47,8 @@ signInWithEmailAndPassword(auth, email, password)
   .catch((error) => {
     const errorCode = error.code;
     const errorMessage = error.message;
+    Alert.alert('Incorrect Email or Password');
   });
-};
-const isValidEmail = (email) => {
-  const emailRegex = /\S+@\S+\.\S+/;
-  return emailRegex.test(email);
-};
-
-const isValidPassword = (password) => {
-  return password.length >= 6;
 };
   return (
     <View style={styles.container}>
