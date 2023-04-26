@@ -36,10 +36,10 @@ const BottomNavBar = () => {
 
   return (
     <BottomNavigation
-      navigationState={{ index, routes }}
-      onIndexChange={setIndex}
-      renderScene={renderScene}
-      barStyle={styles.bottomNavBar}
+      navigationState = {{ index, routes }}
+      onIndexChange = {setIndex}
+      renderScene = {renderScene}
+      barStyle = {styles.bottomNavBar}
       sceneAnimationEnabled = {true}
       sceneAnimationType = {'shifting'}
       theme={theme}      
