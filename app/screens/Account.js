@@ -48,7 +48,7 @@ function Account() {
   const styles = getStyles(theme);
   const [ mode, setMode ]  = useState(false);
 
-  
+  //firebase
   const auth = getAuth();
   const handleSignOut = () => {
     signOut(auth)
@@ -232,14 +232,14 @@ StyleSheet.create({
     backgroundColor: theme.color,
   },
   headerText: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: "bold",
     color: theme.color,
   },
   headerNumber: {
     fontSize: 18,
     fontWeight: "bold",
-    color: theme.color,
+    color: theme.accent,
   },
   item: {
     fontSize: 50,

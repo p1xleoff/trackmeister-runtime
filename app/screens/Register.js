@@ -11,6 +11,8 @@ const Register = () => {
   const styles = getStyles(theme);
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const navigation = useNavigation();
 
   useEffect(() => {
     const auth = getAuth();
@@ -21,7 +23,6 @@ const Register = () => {
     });
   }, [] )
   
-  const navigation = useNavigation();
   const toLogin = () => {
     navigation.navigate('Login');
   };
@@ -42,13 +43,16 @@ const Register = () => {
     if (!isValidPassword(password)) {
       Alert.alert('The password must be at least 8 characters long');
       return;
+    }    if (!isvalidNumber(phoneNumber)) {
+      Alert.alert('Invalid Phone Number');
+      return;
     }
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
         console.log('registered with: ', user.email);
-        Alert.alert('Registration successful');
+        Alert.alert('Welcome!');
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -60,10 +64,12 @@ const Register = () => {
     const emailRegex = /\S+@\S+\.\S+/;
     return emailRegex.test(email);
   };
-  
   const isValidPassword = (password) => {
     return password.length >= 6;
   };
+  const isvalidNumber = (phoneNumber) => {
+    return phoneNumber.length == 10;
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
@@ -87,6 +93,17 @@ const Register = () => {
         textColor={theme.color}
         onChangeText={text => setPassword(text)}
         secureTextEntry
+      />
+      <TextInput
+        style={styles.input}
+        mode="outlined"
+        label="Phone Number"
+        keyboardType='phone-pad'
+        outlineStyle={styles.inputOutline}
+        activeOutlineColor={theme.accent}
+        textColor={theme.color}
+        value={phoneNumber}
+        onChangeText={text => setPhoneNumber(text)}
       />
       <View>
       <TouchableOpacity 
