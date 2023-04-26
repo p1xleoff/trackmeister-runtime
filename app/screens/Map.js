@@ -6,16 +6,18 @@ import SearchBar from "../components/SearchBar";
 import themeContext from "../config/themeContext";
 
 import * as Location from 'expo-location';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 function Map() {
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
-
   const [region, setRegion] = useState(null);
   const [currentLocationMarker, setCurrentLocationMarker] = useState(null);
   const mapRef = useRef(null);
-
+  const [busStops, setBusStops] = useState([]);
+  
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -34,13 +36,19 @@ function Map() {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       });
+          // Get bus stop coordinates from API
+          if (currentLocationMarker) {
+          const response = await fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${currentLocationMarker.latitude},${currentLocationMarker.longitude}&radius=995&type=bus_station&key=AIzaSyB0EBCZbMVu9ZeD_3WAugs1Uj1HccdsX0g`);
+          const data = await response.json();
+          setBusStops(data);
+          }
     })();
   }, []);
 
   if (!region) {
     return null;
   }
-
+  //focus on location
   const handlePress = () => {
     if (mapRef.current) {
       mapRef.current.animateToRegion({
@@ -64,7 +72,30 @@ function Map() {
             coordinate={currentLocationMarker}
           />
         )}
+          {busStops.length > 0 && busStops.map((busStop, index) => (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: busStop.latitude,
+                longitude: busStop.longitude,
+              }}
+              title={busStop.name}
+            />
+          ))}
       </MapView>
+      <View style={{flex: 1, position: 'absolute', width: '90%', top: 100}}>
+      <GooglePlacesAutocomplete
+      placeholder='Search'
+      onPress={(data, details = null) => {
+        // 'details' is provided when fetchDetails = true
+        console.log(data, details);
+      }}
+      query={{
+        key: 'AIzaSyB0EBCZbMVu9ZeD_3WAugs1Uj1HccdsX0g',
+        language: 'en',
+      }}
+    />
+      </View>
       <View style={styles.searchBarContainer}>
         <View style={styles.searchBar}>
           <SearchBar />

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, Pressable, Text, TouchableOpacity } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
 import themeContext from "../config/themeContext";
 
@@ -11,8 +11,6 @@ const Register = () => {
   const styles = getStyles(theme);
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
-  const [phoneNumber, setPhoneNumber] = useState('')
 
   useEffect(() => {
     const auth = getAuth();
@@ -27,22 +25,44 @@ const Register = () => {
   const toLogin = () => {
     navigation.navigate('Login');
   };
-  const tolanding = () => {
+  const toLanding = () => {
     navigation.navigate('Landing');
   };
   //sign up
   const handleSignUp = () => {
+    if (!email || !password) {
+      Alert.alert('Please enter an email and password');
+      return;
+    }
+    if (!isValidEmail(email)) {
+      Alert.alert('Please enter a valid email address');
+      return;
+    }
+  
+    if (!isValidPassword(password)) {
+      Alert.alert('The password must be at least 8 characters long');
+      return;
+    }
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
         console.log('registered with: ', user.email);
+        Alert.alert('Registration successful');
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorMessage);
       });
+  };
+  const isValidEmail = (email) => {
+    const emailRegex = /\S+@\S+\.\S+/;
+    return emailRegex.test(email);
+  };
+  
+  const isValidPassword = (password) => {
+    return password.length >= 6;
   };
   return (
     <View style={styles.container}>
@@ -52,7 +72,7 @@ const Register = () => {
         mode="outlined"
         label="Email"
         textColor={theme.color}
-        outlineColor={theme.accent}
+        outlineStyle={styles.inputOutline}
         activeOutlineColor={theme.accent}
         keyboardType='email-address'
         onChangeText={text => setEmail(text)}
@@ -60,8 +80,8 @@ const Register = () => {
       <TextInput
         style={styles.input}
         mode="outlined"
-        label="Password"
-        outlineColor={theme.accent}
+        label="Password"       
+        outlineStyle={styles.inputOutline}
         activeOutlineColor={theme.accent}
         value={password}
         textColor={theme.color}
@@ -83,6 +103,11 @@ const Register = () => {
                   style={{fontWeight: 'bold', fontSize: 24}}> Log In
                 </Text>
         </Text>
+        <TouchableOpacity 
+        style={styles.button}
+        onPress={toLanding}>
+          <Text style={styles.buttonText}>Home</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -130,8 +155,11 @@ StyleSheet.create({
   text: {
   color: theme.color,
   fontSize: 20,
-}
-
+},
+  inputOutline: {
+    borderRadius: 9, 
+    borderColor: theme.accent
+  }
 });
 
 export default Register; 

@@ -26,7 +26,7 @@ const BottomNavBar = () => {
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
-    map: MapRoute,
+    map: MapRoute, 
     route: RouteRoute,
     account: AccountRoute,
   });
@@ -43,7 +43,7 @@ const BottomNavBar = () => {
       sceneAnimationEnabled = {true}
       sceneAnimationType = {'shifting'}
       theme={theme}      
-      activeColor='red'
+      activeColor='#FC8019'
       inactiveColor='#525252'
     />
   );

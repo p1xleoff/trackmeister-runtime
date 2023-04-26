@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { Alert, StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
 import themeContext from "../config/themeContext";
 
@@ -34,6 +34,19 @@ const Login = () => {
 
   //logging in
 const handleLogIn = () => {  
+  if (!email || !password) {
+    Alert.alert('Please enter an email and password');
+    return;
+  }
+  if (!isValidEmail(email)) {
+    Alert.alert('Please enter a valid email address');
+    return;
+  }
+
+  if (!isValidPassword(password)) {
+    Alert.alert('The password must be at least 8 characters long');
+    return;
+  }
 const auth = getAuth();
 signInWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
@@ -41,13 +54,21 @@ signInWithEmailAndPassword(auth, email, password)
     const user = userCredential.user;
     // ...
     console.log('Logged in with: ', user.email);
+    Alert.alert('Welcome back!');
   })
   .catch((error) => {
     const errorCode = error.code;
     const errorMessage = error.message;
   });
 };
+const isValidEmail = (email) => {
+  const emailRegex = /\S+@\S+\.\S+/;
+  return emailRegex.test(email);
+};
 
+const isValidPassword = (password) => {
+  return password.length >= 6;
+};
   return (
     <View style={styles.container}>
       <Text style={styles.title}>LogIn</Text>
@@ -55,8 +76,9 @@ signInWithEmailAndPassword(auth, email, password)
         style={styles.input}
         mode="outlined"
         label="Email"
+        keyboardType='email-address'
         textColor={theme.color}
-        outlineColor={theme.accent}
+        outlineStyle={styles.inputOutline}
         activeOutlineColor={theme.accent}
         value={email}
         onChangeText={text => setEmail(text)}
@@ -67,7 +89,7 @@ signInWithEmailAndPassword(auth, email, password)
         label="Password"
         value={password}
         textColor={theme.color}
-        outlineColor={theme.accent}
+        outlineStyle={styles.inputOutline}
         activeOutlineColor={theme.accent}
         onChangeText={text => setPassword(text)}
         secureTextEntry
@@ -132,6 +154,10 @@ StyleSheet.create({
   text: {
     color: theme.color,
     fontSize: 20,
+  },
+  inputOutline: {
+    borderRadius: 9, 
+    borderColor: theme.accent
   }
 });
 

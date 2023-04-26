@@ -7,7 +7,7 @@ const theme = {
     barColor: '#f2f2f2',
     modal: '#fff',
     highlight: '#e3e3e3',
-    accent: 'gold'
+    accent: '#ff6200'
   },
   dark: {
     theme: 'dark',
@@ -17,7 +17,7 @@ const theme = {
     primary: 'black',
     modal: '#000',
     highlight: '#2b2b2b',
-    accent: 'gold'
+    accent: '#ff6200'
   }
 }
 

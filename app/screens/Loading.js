@@ -14,7 +14,7 @@ return (
     
 <View style={styles.container}>
  <Text>Loading</Text>
- <ActivityIndicator size="large" color='red'/>
+ <ActivityIndicator size="large" color='#FC8019'/>
 </View>
 )}
 }

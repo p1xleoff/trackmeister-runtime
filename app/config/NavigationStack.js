@@ -15,6 +15,7 @@ import Login from '../screens/Login';
 import Register from '../screens/Register';
 import Loading from '../screens/Loading';
 import Home from '../screens/Home';
+import Places from '../screens/Places'
 
 const Stack = createStackNavigator();
 
@@ -22,11 +23,12 @@ export const NavigationStack = () => {
   return (
     <PaperProvider>
     <Stack.Navigator>
+      <Stack.Screen name="Register" component={Register} options={{ header: () => null }} />
       <Stack.Screen name="Landing" component={Landing} options={{ header: () => null }} />
       <Stack.Screen name="Login" component={Login} options={{ header: () => null }} />
-      <Stack.Screen name="Register" component={Register} options={{ header: () => null }} />
       <Stack.Screen name="Tickets" component={Tickets} />
       <Stack.Screen name="Stops" component={Stops} />
+      <Stack.Screen name="Places" component={Places} />
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Demap" component={Demap} options={{ headerTitle: 'Set Marker' }} />
       <Stack.Screen name="Favorites" component={Favorites} />
