@@ -15,7 +15,8 @@ import Login from '../screens/Login';
 import Register from '../screens/Register';
 import Loading from '../screens/Loading';
 import Home from '../screens/Home';
-import Places from '../screens/Places'
+import Places from '../screens/Places';
+import Profile from '../screens/Profile';
 
 const Stack = createStackNavigator();
 
@@ -27,6 +28,7 @@ export const NavigationStack = () => {
       <Stack.Screen name="Landing" component={Landing} options={{ header: () => null }} />
       <Stack.Screen name="Login" component={Login} options={{ header: () => null }} />
       <Stack.Screen name="Tickets" component={Tickets} />
+      <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Stops" component={Stops} />
       <Stack.Screen name="Places" component={Places} />
       <Stack.Screen name="Home" component={Home} />

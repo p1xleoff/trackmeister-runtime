@@ -30,7 +30,13 @@
       }
     },
     "web": {
-      "favicon": "./app/assets/favicon.png"
-    }
+      "favicon": "./app/assets/favicon.png",
+      "config": {
+        "firebase": "./app/data/firebaseConfig"
+      }
+    },
+    "plugins": [
+      "@react-native-firebase/app"
+    ]
   }
 }

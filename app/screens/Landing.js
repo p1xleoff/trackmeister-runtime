@@ -42,9 +42,10 @@ const BottomNavBar = () => {
       barStyle = {styles.bottomNavBar}
       sceneAnimationEnabled = {true}
       sceneAnimationType = {'shifting'}
-      theme={theme}      
+      theme={{colors: {secondaryContainer: 'transparent'}}}      
       activeColor='#FC8019'
       inactiveColor='#525252'
+      secondaryContainer= 'red'
     />
   );
 }

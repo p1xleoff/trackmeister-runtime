@@ -28,6 +28,9 @@ const Register = () => {
   };
   const toLanding = () => {
     navigation.navigate('Landing');
+  };  
+  const toPhoneAuth = () => {
+    navigation.navigate('PhoneAuth');
   };
   //sign up
   const handleSignUp = () => {
@@ -109,22 +112,19 @@ const Register = () => {
       <TouchableOpacity 
         style={styles.button}
         onPress={handleSignUp}>
-          <Text style={styles.buttonText}>SIGN UP</Text>
+          <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.textWrap}>
         <Text style={styles.text}>
             Already have an account? 
-                <Text 
-                  onPress={toLogin}
+                <Text onPress={toLogin}
                   style={{fontWeight: 'bold', fontSize: 24}}> Log In
                 </Text>
         </Text>
-        <TouchableOpacity 
-        style={styles.button}
-        onPress={toLanding}>
+        {/* <TouchableOpacity style={styles.button} onPress={toLanding}>
           <Text style={styles.buttonText}>Home</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );

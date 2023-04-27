@@ -40,6 +40,9 @@ function Account() {
   };  
   const toFavorites = () => {
     navigation.navigate("Favorites");
+  };  
+  const toProfile = () => {
+    navigation.navigate("Profile");
   };
 
   //theme radio button
@@ -65,8 +68,8 @@ function Account() {
       <View style={styles.accountContainer}>
         <Avatar.Icon style={styles.accountIcon} size={75} icon="account" />
         <View style={styles.accountHeader}>
-          <Text style={styles.headerText}>{auth.currentUser?.email}</Text>
-          <TouchableOpacity onPress={handleSignOut}><Text style={styles.headerNumber}>Sign Out</Text></TouchableOpacity>
+          <Text onPress={toProfile} style={styles.headerText}>{auth.currentUser?.email}</Text>
+          <TouchableOpacity onPress={handleSignOut}><Text style={styles.headerNumber}>Log Out</Text></TouchableOpacity>
         </View>
       </View>
       <Divider style={{ backgroundColor: "black", height: 1 }} />
@@ -118,7 +121,6 @@ function Account() {
           />
         </View>
       </View>
-      <Divider style={{ backgroundColor: "black", height: 1 }} />
       <View>
         <View style={styles.item}>
           <List.Item
@@ -235,11 +237,12 @@ StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: theme.color,
+    paddingBottom: 10, 
   },
   headerNumber: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "bold",
-    color: theme.accent,
+    color: theme.option,
   },
   item: {
     fontSize: 50,
