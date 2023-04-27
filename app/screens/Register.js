@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { TextInput, IconButton } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
@@ -12,6 +12,7 @@ const Register = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -95,8 +96,14 @@ const Register = () => {
         value={password}
         textColor={theme.color}
         onChangeText={text => setPassword(text)}
-        secureTextEntry
-      />
+        secureTextEntry={!passwordVisible}
+        right={
+        <TextInput.Icon 
+          icon={passwordVisible ?'eye' : 'eye-off'} 
+          onPress={() => setPasswordVisible(!passwordVisible)}/>
+        }     
+        />             
+       
       <TextInput
         style={styles.input}
         mode="outlined"
@@ -176,7 +183,7 @@ StyleSheet.create({
   inputOutline: {
     borderRadius: 9, 
     borderColor: theme.accent
-  }
+  },
 });
 
 export default Register; 

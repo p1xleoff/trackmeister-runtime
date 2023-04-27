@@ -9,7 +9,7 @@ import {
   Button,
   Switch,
 } from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { EventRegister } from "react-native-event-listeners";
 import { getAuth, signOut } from 'firebase/auth';
