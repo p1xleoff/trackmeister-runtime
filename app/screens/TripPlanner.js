@@ -78,7 +78,7 @@ StyleSheet.create({
     flex: 1,
   },
   tabBar: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.background,
   },
   indicator: {
     backgroundColor: 'gold',

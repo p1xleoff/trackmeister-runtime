@@ -37,8 +37,7 @@ const SearchBar = () => {
     },
     searchBar: {
       flex: 1,
-      borderRadius: 30,
-      
+      borderRadius: 30,   
       backgroundColor: theme.barColor,
     },  
     searchInput: {

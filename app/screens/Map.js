@@ -1,101 +1,124 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
-import MapView, { Marker } from "react-native-maps";
-
-import SearchBar from "../components/SearchBar";
-import themeContext from "../config/themeContext";
-
+import React, { useContext, useState, useEffect, useRef } from 'react';
+import { View, StyleSheet, Button, TouchableOpacity, Text } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import themeContext from "../config/themeContext";
+import SearchBar from "../components/SearchBar";
 
-function Map() {
+const StopsMap = () => {
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
-  const [region, setRegion] = useState(null);
-  const [currentLocationMarker, setCurrentLocationMarker] = useState(null);
+  const [markers, setMarkers] = useState([]);
+  const apikey = 'AIzaSyAGQs7_a1qpQumNVgubJ2ub2Egqc1fx12I';
   const mapRef = useRef(null);
-  const [busStops, setBusStops] = useState([]);
-  
+  const [locationFocus, setLocationFocus] = useState(null);
+  const [location, setLocation] = useState(null);
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+    const getLocationAsync = async () => {
+      const { status } = await Location.requestBackgroundPermissionsAsync();
       if (status !== 'granted') {
+        console.log('Permission to access location was denied');
         return;
       }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setRegion({
+      const location = await Location.getCurrentPositionAsync({});
+      setLocation({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        latitudeDelta: 0.0150,
+        longitudeDelta: 0.0150,
       });
-      setCurrentLocationMarker({
+      setLocationFocus({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       });
-    })();
+    };
+    getLocationAsync();
   }, []);
 
-  if (!region) {
+  if (!location) {
     return null;
   }
-  //focus on location
-  const handlePress = () => {
+
+  const getNearbyBusStops = async () => {
+    const radius = 1000;
+    const keywords = ['bus stop', 'bus stand'];
+    let busStops = [];
+
+    for (let i = 0; i < keywords.length; i++) {
+      const keyword = keywords[i];
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=${radius}&type=[bus_station, transit_station]&keyword=${keyword}&key=${apikey}`
+      );
+      const data = await response.json();
+      busStops = [...busStops, ...data.results];
+    }
+
+    // Deduplicate the results
+    busStops = [...new Map(busStops.map((item) => [item.place_id, item])).values()];
+
+    // Add markers to the map
+    const markers = busStops.map((busStop) => {
+      return {
+        id: busStop.place_id,
+        latitude: busStop.geometry.location.lat,
+        longitude: busStop.geometry.location.lng,
+        title: busStop.name,
+        description: busStop.vicinity,
+      };
+    });
+
+    setMarkers(markers);
+  };
+  const focusUserLocation = () => {
     if (mapRef.current) {
       mapRef.current.animateToRegion({
-        latitude: currentLocationMarker.latitude,
-        longitude: currentLocationMarker.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        latitude: locationFocus.latitude,
+        longitude: locationFocus.longitude,
+        latitudeDelta: 0.0150,
+        longitudeDelta: 0.0150,
       }, 1000);
     }
   };
 
   return (
     <View style={styles.container}>
-      <MapView
-        ref={mapRef}
-        style={styles.map}
-        initialRegion={region}
-      >
-        {currentLocationMarker && (
+      <MapView style={styles.map} 
+      showsUserLocation={true}
+      showsBuildings={false}
+      loadingEnabled={true}
+      showsMyLocationButton={false}
+       ref={mapRef}
+       region={location}>
+        {markers.map((marker) => (
           <Marker
-            coordinate={currentLocationMarker}
+            key={marker.id}
+            coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+            title={marker.title}
+            description={marker.description}
+            pinColor= "navy"
+            tracksViewChanges={false}
           />
-        )}
-          {busStops.length > 0 && busStops.map((busStop, index) => (
-            <Marker
-              key={index}
-              coordinate={{
-                latitude: busStop.latitude,
-                longitude: busStop.longitude,
-              }}
-              title={busStop.name}
-            />
-          ))}
+        ))}
       </MapView>
-      <View style={{flex: 1, position: 'absolute', width: '90%', top: 100}}>
-
-      </View>
       <View style={styles.searchBarContainer}>
         <View style={styles.searchBar}>
           <SearchBar />
         </View>
-      </View>
+      </View>     
       <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={handlePress}>
+      <TouchableOpacity style={styles.button} onPress={focusUserLocation}>
         <View style={styles.buttonContent}>
         <MaterialCommunityIcons style={styles.icon} name='crosshairs-gps'/>
         <Text style={styles.buttonText}>Focus On Your Location</Text>
         </View>
-    </TouchableOpacity>
+    </TouchableOpacity>      
         </View>
-    </View>
+        <Button title="Show Nearby Bus Stops" onPress={getNearbyBusStops}/>
+      </View>
   );
-}
+};
 
 const getStyles = (theme) =>
   StyleSheet.create({
@@ -114,7 +137,7 @@ const getStyles = (theme) =>
     },
     buttonContainer: {
       position: 'absolute',
-      bottom: 10,
+      bottom: 50,
       alignSelf: 'center',
       justifyContent: 'center',
       alignItems: 'center',
@@ -132,14 +155,15 @@ const getStyles = (theme) =>
       justifyContent: 'center',
     },
     buttonText: {
-      color: 'black',
-      fontSize: 16,
+      color: '#fff',
+      fontSize: 14,
+      fontWeight: 'bold'
     },
     icon: {
-      fontSize: 24,
+      fontSize: 22,
       paddingRight: 5,
-      color: 'black',
+      color: '#fff',
     }
   });
 
-export default Map;
+export default StopsMap;

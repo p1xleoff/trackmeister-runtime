@@ -79,7 +79,7 @@ signInWithEmailAndPassword(auth, email, password)
         <TouchableOpacity 
         style={styles.button}
         onPress={handleLogIn}>
-          <Text style={styles.buttonText}>LOG IN</Text>
+          <Text style={styles.buttonText}>Log In</Text>
         </TouchableOpacity> 
       </View>
       <View style={styles.textWrap}>
@@ -118,7 +118,7 @@ StyleSheet.create({
   buttonText: {
     fontSize: 25,
     fontWeight: 'bold',
-    color: 'black',
+    color: 'white',
     letterSpacing: 1,
 },
   title: {

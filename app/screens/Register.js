@@ -129,9 +129,9 @@ const Register = () => {
                   style={{fontWeight: 'bold', fontSize: 24}}> Log In
                 </Text>
         </Text>
-        {/* <TouchableOpacity style={styles.button} onPress={toLanding}>
+        <TouchableOpacity style={styles.button} onPress={toLanding}>
           <Text style={styles.buttonText}>Home</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -162,7 +162,7 @@ StyleSheet.create({
   buttonText: {
     fontSize: 25,
     fontWeight: 'bold',
-    color: 'black',
+    color: 'white',
     letterSpacing: 1,
 },
   title: {
