@@ -62,6 +62,7 @@ const Register = () => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorMessage);
+        Alert.alert('Email already in use');
       });
   };
   const isValidEmail = (email) => {
