@@ -10,7 +10,7 @@ const StopsMap = () => {
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
   const [markers, setMarkers] = useState([]);
-  const apikey = 'AIzaSyAGQs7_a1qpQumNVgubJ2ub2Egqc1fx12I';
+  const apikey = 'API_KEY';
   const mapRef = useRef(null);
   const [locationFocus, setLocationFocus] = useState(null);
   const [location, setLocation] = useState(null);
