@@ -44,4 +44,7 @@ if (!email || !password) {
   
   const isValidPassword = (password) => {
     return password.length >= 6;
-  };s
+  };
+
+  //api url
+  `https://maps.googleapis.com/maps/api/place/textsearch/json?key=YOUR_API_KEY&query=${searchQuery} bus stop`

@@ -5,6 +5,7 @@ import * as Location from 'expo-location';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import themeContext from "../config/themeContext";
 import SearchBar from "../components/SearchBar";
+import Search from '../components/Search';
 
 const StopsMap = () => {
   const theme = useContext(themeContext);
@@ -104,7 +105,7 @@ const StopsMap = () => {
       </MapView>
       <View style={styles.searchBarContainer}>
         <View style={styles.searchBar}>
-          <SearchBar />
+          <Search />
         </View>
       </View>     
       <View style={styles.buttonContainer}>

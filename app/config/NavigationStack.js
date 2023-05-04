@@ -2,6 +2,7 @@ import React from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { Provider as PaperProvider } from 'react-native-paper';
+import { LocationProvider } from './LocationProvider';
 
 import Landing from '../screens/Landing';
 import Tickets from '../screens/Tickets';
@@ -18,15 +19,18 @@ import Home from '../screens/Home';
 import Places from '../screens/Places';
 import Profile from '../screens/Profile';
 import Tester from '../screens/Tester';
+import Search from '../components/Search';
 
 const Stack = createStackNavigator();
 
 export const NavigationStack = () => {
   return (
+    <LocationProvider>
     <PaperProvider>
     <Stack.Navigator>
-      <Stack.Screen name="Tester" component={Tester} options={{ header: () => null }}/>
       <Stack.Screen name="Landing" component={Landing} options={{ header: () => null }} />
+      <Stack.Screen name="Tester" component={Tester} options={{ header: () => null }}/>
+      <Stack.Screen name="Search" component={Search} options={{ header: () => null }}/>
       <Stack.Screen name="Register" component={Register} options={{ header: () => null }} />
       <Stack.Screen name="Login" component={Login} options={{ header: () => null }} />
       <Stack.Screen name="Tickets" component={Tickets} />
@@ -42,5 +46,6 @@ export const NavigationStack = () => {
       <Stack.Screen name="Loading" component={Loading} />
     </Stack.Navigator>
     </PaperProvider>
+    </LocationProvider>
   );
 };
