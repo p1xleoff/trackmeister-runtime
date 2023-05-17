@@ -223,8 +223,7 @@ StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginLeft: "5%",
-    marginTop: '15%',
-    marginBottom: '5%',
+    marginVertical: '5%',
   },
   accountHeader: {
     justifyContent: "center",

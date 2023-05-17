@@ -9,6 +9,7 @@ const theme = {
     highlight: '#e3e3e3',
     accent: '#ff6200',
     option: '#4a4a4a',
+    subtext: '#525252',
   },
   dark: {
     theme: 'dark',
@@ -20,6 +21,7 @@ const theme = {
     highlight: '#2b2b2b',
     accent: '#ff6200',
     option: '#787878',
+    subtext: '#8f8f8f',
   }
 }
 

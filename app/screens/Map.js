@@ -1,113 +1,102 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Button, TouchableOpacity, Text } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import * as Location from 'expo-location';
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { requestBackgroundPermissionsAsync, getLastKnownPositionAsync, watchPositionAsync } from 'expo-location';
+import { getDatabase, ref, onValue, off } from 'firebase/database';
 import themeContext from "../config/themeContext";
-import SearchBar from "../components/SearchBar";
-import Search from '../components/Search';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import SearchBar from '../components/SearchBar';
 
-const StopsMap = () => {
+const Map = () => {
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
-  const [markers, setMarkers] = useState([]);
-  const apikey = 'API_KEY';
-  const mapRef = useRef(null);
-  const [locationFocus, setLocationFocus] = useState(null);
-  const [location, setLocation] = useState(null);
-  useEffect(() => {
-    const getLocationAsync = async () => {
-      const { status } = await Location.requestBackgroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.log('Permission to access location was denied');
-        return;
-      }
 
-      const location = await Location.getCurrentPositionAsync({});
-      setLocation({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.0150,
-        longitudeDelta: 0.0150,
-      });
-      setLocationFocus({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      });
+  const [busStops, setBusStops] = useState([]);
+  const [userLocation, setUserLocation] = useState(null);
+
+  useEffect(() => {
+    const busStopsRef = ref(getDatabase(), 'busStops');
+
+    const handleData = (snapshot) => {
+      const busStopsData = snapshot.val();
+      if (busStopsData) {
+        const busStopsArray = Object.values(busStopsData);
+        setBusStops(busStopsArray);
+      }
     };
-    getLocationAsync();
+
+    onValue(busStopsRef, handleData);
+
+    // Request location permissions
+    const requestLocationPermission = async () => {
+      const { status } = await requestBackgroundPermissionsAsync();
+      if (status === 'granted') {
+        // Get the user's last known position
+        const location = await getLastKnownPositionAsync({});
+        if (location) {
+          setUserLocation(location.coords);
+        }
+        // Watch for location updates
+        const locationWatchId = watchPositionAsync({}, (location) => {
+          setUserLocation(location.coords);
+        });
+        return () => {
+          off(busStopsRef, 'value', handleData);
+          // Clear the location watch when the component unmounts
+          locationWatchId.remove();
+        };
+      }
+    };
+
+    requestLocationPermission();
   }, []);
 
-  if (!location) {
-    return null;
-  }
-
-  const getNearbyBusStops = async () => {
-    const radius = 1000;
-    const keywords = ['bus stop', 'bus stand'];
-    let busStops = [];
-
-    for (let i = 0; i < keywords.length; i++) {
-      const keyword = keywords[i];
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=${radius}&type=[bus_station, transit_station]&keyword=${keyword}&key=${apikey}`
-      );
-      const data = await response.json();
-      busStops = [...busStops, ...data.results];
-    }
-
-    // Deduplicate the results
-    busStops = [...new Map(busStops.map((item) => [item.place_id, item])).values()];
-
-    // Add markers to the map
-    const markers = busStops.map((busStop) => {
-      return {
-        id: busStop.place_id,
-        latitude: busStop.geometry.location.lat,
-        longitude: busStop.geometry.location.lng,
-        title: busStop.name,
-        description: busStop.vicinity,
-      };
-    });
-
-    setMarkers(markers);
-  };
   const focusUserLocation = () => {
-    if (mapRef.current) {
+    if (userLocation) {
       mapRef.current.animateToRegion({
-        latitude: locationFocus.latitude,
-        longitude: locationFocus.longitude,
-        latitudeDelta: 0.0150,
-        longitudeDelta: 0.0150,
-      }, 1000);
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
     }
   };
+  const mapRef = React.createRef();
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} 
-      showsUserLocation={true}
-      showsBuildings={false}
-      loadingEnabled={true}
-      showsMyLocationButton={false}
-       ref={mapRef}
-       region={location}>
-        {markers.map((marker) => (
-          <Marker
-            key={marker.id}
-            coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
-            title={marker.title}
-            description={marker.description}
-            pinColor= "navy"
-            tracksViewChanges={false}
-          />
-        ))}
-      </MapView>
+      {userLocation && (
+        <MapView
+          ref={mapRef}
+          style={styles.map}
+          initialRegion={{
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          showsCompass= {true}
+          showsUserLocation={true}
+          loadingEnabled={true}
+          showsMyLocationButton={false}
+        >
+          {busStops.map((busStops) => (
+            <Marker
+              key={busStops.stopId}
+              coordinate={{ latitude: busStops.latitude, longitude: busStops.longitude }}
+              title={busStops.stopName}
+              description={busStops.address}
+              pinColor='blue'
+            />
+          ))}
+        </MapView>
+      )}
+      {!userLocation && <Text>Loading...</Text>}
       <View style={styles.searchBarContainer}>
         <View style={styles.searchBar}>
-          <Search />
+        <SearchBar />
         </View>
-      </View>     
+      </View> 
       <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.button} onPress={focusUserLocation}>
         <View style={styles.buttonContent}>
@@ -116,55 +105,59 @@ const StopsMap = () => {
         </View>
     </TouchableOpacity>      
         </View>
-        <Button title="Show Nearby Bus Stops" onPress={getNearbyBusStops}/>
-      </View>
+    </View>
   );
 };
 
 const getStyles = (theme) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: theme.background,
-    },
-    map: {
-      flex: 1,
-    },
-    searchBarContainer: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-    },
-    buttonContainer: {
-      position: 'absolute',
-      bottom: 50,
-      alignSelf: 'center',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'transparent',
-    },
-    buttonContent:  {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    button: {
-      backgroundColor: theme.accent,
-      padding: 16,
-      borderRadius: 29,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    buttonText: {
-      color: '#fff',
-      fontSize: 14,
-      fontWeight: 'bold'
-    },
-    icon: {
-      fontSize: 22,
-      paddingRight: 5,
-      color: '#fff',
-    }
-  });
+  container: {
+    flex: 1,
+  },
+  map: {
+    flex: 1,
+  },
+  searchBarContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 10,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  buttonContent:  {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: theme.accent,
+    padding: 16,
+    borderRadius: 29,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold'
+  },
+  icon: {
+    fontSize: 22,
+    paddingRight: 5,
+    color: '#fff',
+  }
+});
 
-export default StopsMap;
+export default function App() {
+  return (
+    <View style={{ flex: 1 }}>
+      <Map />
+    </View>
+  );
+}
