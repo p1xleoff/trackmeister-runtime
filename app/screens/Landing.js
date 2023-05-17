@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
-import { BottomNavigation, Text } from 'react-native-paper';
+import { BottomNavigation } from 'react-native-paper';
 
 import themeContext from "../config/themeContext";
 
@@ -45,7 +45,6 @@ const BottomNavBar = () => {
       theme={{colors: {secondaryContainer: 'transparent'}}}      
       activeColor='#FC8019'
       inactiveColor='#525252'
-      secondaryContainer= 'red'
     />
   );
 }
@@ -53,7 +52,7 @@ const BottomNavBar = () => {
 const getStyles = (theme) =>
 StyleSheet.create({
   bottomNavBar: {
-    marginBottom: -9,
+    marginBottom: -5,
     backgroundColor: theme.barColor,
   },
 });

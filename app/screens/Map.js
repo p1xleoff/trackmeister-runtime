@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { requestBackgroundPermissionsAsync, getLastKnownPositionAsync, watchPositionAsync } from 'expo-location';
+import { requestForegroundPermissionsAsync, getLastKnownPositionAsync, watchPositionAsync } from 'expo-location';
 import { getDatabase, ref, onValue, off } from 'firebase/database';
 import themeContext from "../config/themeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -29,7 +29,7 @@ const Map = () => {
 
     // Request location permissions
     const requestLocationPermission = async () => {
-      const { status } = await requestBackgroundPermissionsAsync();
+      const { status } = await requestForegroundPermissionsAsync();
       if (status === 'granted') {
         // Get the user's last known position
         const location = await getLastKnownPositionAsync({});
@@ -91,7 +91,7 @@ const Map = () => {
           ))}
         </MapView>
       )}
-      {!userLocation && <Text>Loading...</Text>}
+      {!userLocation && <ActivityIndicator style={styles.loader} size="large" color={theme.accent} />}
       <View style={styles.searchBarContainer}>
         <View style={styles.searchBar}>
         <SearchBar />
@@ -151,13 +151,12 @@ const getStyles = (theme) =>
     fontSize: 22,
     paddingRight: 5,
     color: '#fff',
-  }
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
-export default function App() {
-  return (
-    <View style={{ flex: 1 }}>
-      <Map />
-    </View>
-  );
-}
+export default Map;
