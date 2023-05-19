@@ -19,7 +19,9 @@ import Home from '../screens/Home';
 import Places from '../screens/Places';
 import Profile from '../screens/Profile';
 import Tester from '../screens/Tester';
+
 import Search from '../components/Search';
+
 
 const Stack = createStackNavigator();
 

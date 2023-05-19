@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { BottomNavigation } from 'react-native-paper';
-
+import { useRoute } from '@react-navigation/native';
 import themeContext from "../config/themeContext";
 
 import Home from './Home';
@@ -10,10 +10,14 @@ import Route from './Route';
 import Account from './Account';
 
 const HomeRoute = () => <Home />;
-const MapRoute = () => <Map />;
+const MapRoute = () => {
+  const route = useRoute();
+  const { busStop } = route.params || {};
+  return <Map busStop={busStop} />;
+};
+
 const RouteRoute = () => <Route />;
 const AccountRoute = () => <Account />;
-
 
 const BottomNavBar = () => {
   const [index, setIndex] = React.useState(0);
