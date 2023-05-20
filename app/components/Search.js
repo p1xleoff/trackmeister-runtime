@@ -96,7 +96,7 @@ const getStyles = (theme) =>
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: theme.background,
+      backgroundColor: theme.back,
     },
     searchBar: {
       backgroundColor: theme.barColor,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
-import MapView, { Marker, Callout } from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import themeContext from "../config/themeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -79,28 +79,6 @@ const MapScreen = ({ route }) => {
 
   const mapRef = React.createRef();
 
-  const renderBusStopMarkers = () => {
-    return busStops.map((stop) => (
-      <Marker
-        key={stop.stopId}
-        coordinate={{
-          latitude: stop.latitude,
-          longitude: stop.longitude,
-        }}
-        title={stop.stopName}
-        description={stop.address}
-        pinColor='green'
-      >
-        <Callout>
-          <View style={styles.calloutContainer}>
-            <Text style={styles.calloutTitle}>{stop.stopName}</Text>
-            <Text style={styles.calloutDescription}>{stop.address}</Text>
-          </View>
-        </Callout>
-      </Marker>
-    ));
-  };
-
   return (
     <View style={styles.container}>
       {userLocation && mapRegion && (
@@ -111,7 +89,18 @@ const MapScreen = ({ route }) => {
           showsUserLocation={true}
           showsMyLocationButton={false}
         >
-          {renderBusStopMarkers()}
+          {busStops.map((stop) => (
+            <Marker
+              key={stop.stopId}
+              coordinate={{
+                latitude: stop.latitude,
+                longitude: stop.longitude,
+              }}
+              title={stop.stopName}
+              description={stop.address}
+              pinColor='green'
+            />
+          ))}
         </MapView>
       )}
 
@@ -183,20 +172,6 @@ const getStyles = (theme) =>
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-    },
-    calloutContainer: {
-      padding: 10,
-      backgroundColor: 'white',
-      borderRadius: 5,
-      borderWidth: 1,
-      borderColor: theme.accent,
-    },
-    calloutTitle: {
-      fontWeight: 'bold',
-      marginBottom: 5,
-    },
-    calloutDescription: {
-      color: theme.subtext,
     },
   });
 
