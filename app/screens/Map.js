@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Circle } from 'react-native-maps';
 import * as Location from 'expo-location';
 import themeContext from "../config/themeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import SearchBar from '../components/SearchBar';
 import { getDatabase, ref, onValue, off } from 'firebase/database';
+import MapViewDirections from 'react-native-maps-directions';
+import { GMAPS_KEY } from '@env';
 
 const MapScreen = ({ route }) => {
   const { busStop } = route?.params ?? {};
@@ -13,6 +15,7 @@ const MapScreen = ({ route }) => {
   const [userLocation, setUserLocation] = useState(null);
   const [mapRegion, setMapRegion] = useState(null);
   const [busStops, setBusStops] = useState([]);
+  const [selectedBusStop, setSelectedBusStop] = useState(null);
 
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
@@ -67,6 +70,7 @@ const MapScreen = ({ route }) => {
   }, []);
 
   const focusUserLocation = () => {
+    setSelectedBusStop(null);
     if (userLocation) {
       mapRef.current.animateToRegion({
         latitude: userLocation.latitude,
@@ -99,8 +103,34 @@ const MapScreen = ({ route }) => {
               title={stop.stopName}
               description={stop.address}
               pinColor='green'
+              onPress={() => setSelectedBusStop(stop)}
             />
           ))}
+          <Circle
+            center={{
+              latitude: userLocation.latitude,
+              longitude: userLocation.longitude,
+            }}
+            radius={1000}
+            fillColor="rgba(0, 128, 255, 0.2)"
+            strokeColor="rgba(0, 128, 255, 0.5)"
+            strokeWidth={1}
+          />
+          {selectedBusStop && (
+            <MapViewDirections
+              origin={{
+                latitude: userLocation.latitude,
+                longitude: userLocation.longitude,
+              }}
+              destination={{
+                latitude: selectedBusStop.latitude,
+                longitude: selectedBusStop.longitude,
+              }}
+              apikey={GMAPS_KEY}
+              strokeWidth={4}
+              strokeColor="blue"
+            />
+          )}
         </MapView>
       )}
 
