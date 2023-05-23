@@ -106,7 +106,7 @@ const MapScreen = ({ route }) => {
               onPress={() => setSelectedBusStop(stop)}
             />
           ))}
-          <Circle
+          {/* <Circle
             center={{
               latitude: userLocation.latitude,
               longitude: userLocation.longitude,
@@ -115,7 +115,7 @@ const MapScreen = ({ route }) => {
             fillColor="rgba(0, 128, 255, 0.2)"
             strokeColor="rgba(0, 128, 255, 0.5)"
             strokeWidth={1}
-          />
+          /> */}
           {selectedBusStop && (
             <MapViewDirections
               origin={{
