@@ -22,5 +22,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+
+//Enable Persistence
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
 export {auth};
 // const analytics = getAnalytics(app);

@@ -1,45 +1,52 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
-import SearchBar from '../components/SearchBar';
-import themeContext from "../config/themeContext";
+import { StyleSheet, View, Text, FlatList, TouchableOpacity, StatusBar} from 'react-native';
 import * as Location from 'expo-location';
+import themeContext from "../config/themeContext";
 import { getDatabase, ref, onValue, off } from 'firebase/database';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
+import { LocationProvider } from '../config/LocationProvider';
+import { Searchbar } from 'react-native-paper';
 
-const Home = () => {
+const Tester = () => {
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
   const [nearestStops, setNearestStops] = useState([]);
-  const [showStops, setShowStops] = useState(2);
-  const [isCollapsed, setIsCollapsed] = useState(true);
+
+  const navigation = useNavigation();
+  const toBusStops = () => {
+    navigation.navigate("Stops");
+  };
+
+  useEffect(() => {
+    getLocationPermissionAndFetchData();
+  }, []);
+
+  const getLocationPermissionAndFetchData = async () => {
+    const granted = await LocationProvider();
+    if (granted) {
+      getUserLocation();
+    }
+  };
 
   const getUserLocation = async () => {
     try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.error('Permission to access location was denied');
-        return;
-      }
-  
       const { coords } = await Location.getCurrentPositionAsync();
-  
+
       const stops = await fetchNearestStops(coords.latitude, coords.longitude);
       setNearestStops(stops);
     } catch (error) {
       console.error('Error getting user location:', error);
     }
   };
-  
-  useEffect(() => {
-    getUserLocation();
-  }, []);
-  
 
+  //get nearest bus stops from db
   const fetchNearestStops = async (latitude, longitude) => {
     try {
       const db = getDatabase();
-      const dbRef = ref(db, 'busStops');
+      const busStopsRef = ref(db, 'busStops');
       const snapshot = await new Promise((resolve, reject) => {
-        onValue(dbRef, resolve, reject);
+        onValue(busStopsRef, resolve, reject);
       });
 
       if (snapshot.exists()) {
@@ -65,9 +72,9 @@ const Home = () => {
         });
 
         // Sort the stops based on distance in ascending order
-        const nearestStops = stopsWithDistance.sort((a, b) => a.distance - b.distance);
+        const sortedStops = stopsWithDistance.sort((a, b) => a.distance - b.distance);
 
-        return nearestStops;
+        return sortedStops;
       } else {
         console.log('No stops found');
         return [];
@@ -77,82 +84,69 @@ const Home = () => {
       return [];
     }
   };
+  const handleBusStopSelect = (busStop) => {
+    navigation.navigate('Map', { busStop });
+  };
 
+  //calculate distance from user location
   const calculateDistance = (userLatitude, userLongitude, stopLatitude, stopLongitude) => {
     const toRadians = (value) => (value * Math.PI) / 180; // Helper function to convert degrees to radians
-
+  
     const earthRadius = 6371; // Radius of the Earth in kilometers
-
+  
     const phi1 = toRadians(userLatitude);
     const phi2 = toRadians(stopLatitude);
     const deltaPhi = toRadians(stopLatitude - userLatitude);
     const deltaLambda = toRadians(stopLongitude - userLongitude);
-
+  
     const a =
       Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
       Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
-
+  
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
+  
     const distance = earthRadius * c;
-
-    // Convert distance to meters and round to two decimal places
-    return Math.round(distance * 1000);
+  
+    // Format distance with leading zero and two decimal places
+    const formattedDistance = distance.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  
+    return formattedDistance;
   };
 
   const renderStopItem = ({ item }) => (
-    <TouchableOpacity style={styles.textContainer}>
-      <Text style={[styles.itemName, styles.text]}>{item.stopName}</Text>
-      <Text style={[styles.itemAddress, styles.text]}>{item.address}</Text>
-      <Text style={[styles.itemDistance, styles.text]}>{item.distance} m away</Text>
+    <TouchableOpacity onPress={() => handleBusStopSelect(item)} style={styles.textContainer}>
+      <View style={{ flex: 0.2 }}>
+        <Text style={[styles.itemDistance, styles.text]}>{item.distance} km {'\n'}</Text>
+      </View>
+      <View style={{ flex: 0.8, justifyContent: 'flex-start' }}>
+        <Text style={[styles.itemName, styles.text]}>{item.stopName}</Text>
+        <Text style={[styles.itemAddress, styles.text]}>{item.address}</Text>
+      </View>
+      <TouchableOpacity>
+        <MaterialCommunityIcons style={styles.icon} size={20} name="crosshairs-gps" />
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 
-  const handleShowMore = () => {
-    if (showStops < 5) {
-      setShowStops(showStops + 1);
-    } else {
-      setIsCollapsed(false);
-    }
-  };
-
-  const handleCollapse = () => {
-    setIsCollapsed(true);
-  };
-
-  const handleRefresh = () => {
-    getUserLocation();
-  };
-
   return (
     <View style={styles.container}>
-      <SearchBar />
-      <Text style={styles.topText}>Nearby Stops</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text style={styles.topText}>Nearest Stops</Text>
+      </View>
       <View style={styles.listContainer}>
         {nearestStops.length > 0 ? (
           <>
             <FlatList
-              data={nearestStops.slice(0, showStops)}
+              data={nearestStops}
               renderItem={renderStopItem}
               keyExtractor={(item) => item.stopId.toString()}
               contentContainerStyle={styles.listContent}
-              initialNumToRender={2}
+              showsVerticalScrollIndicator={false}
             />
-            {showStops < 6 && isCollapsed ? (
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.showButton} onPress={handleShowMore}>
-                  <Text style={styles.buttonText}>Show More</Text>
-                </TouchableOpacity>
-                <View style={styles.separator} />
-                <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
-                  <Text style={styles.buttonText}>Refresh</Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <TouchableOpacity style={styles.collapseButton} onPress={handleCollapse}>
-                <Text style={styles.buttonText}>Collapse</Text>
-              </TouchableOpacity>
-            )}
           </>
         ) : (
           <Text style={styles.text}>Loading nearest stops...</Text>
@@ -165,16 +159,28 @@ const Home = () => {
 const getStyles = (theme) =>
   StyleSheet.create({
     container: {
-      flex: 1,
+      flex: 0.01,
       backgroundColor: theme.background,
       color: theme.color,
+      borderWidth: 1,
+      borderColor: theme.highlight,
+      elevation: 5,
+      borderRadius: 10,
+      marginHorizontal: 1
     },
     topText: {
       fontSize: 18,
       fontWeight: 'bold',
       marginTop: 10,
-      color: theme.color,
-      marginHorizontal: '5%',
+      color: theme.accent,
+      marginHorizontal: '3%',
+    },
+    textContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 10,
+      flex: 1,
+      borderColor: theme.highlight,
     },
     text: {
       color: theme.color,
@@ -183,8 +189,9 @@ const getStyles = (theme) =>
       borderRadius: 10,
       marginTop: 10,
       marginBottom: 20,
-      marginHorizontal: '5%',
+      marginHorizontal: '3%',
       backgroundColor: theme.background,
+      overflow: 'hidden'
     },
     itemName: {
       fontSize: 16,
@@ -199,53 +206,9 @@ const getStyles = (theme) =>
       marginTop: 2,
       fontWeight: '600',
     },
-    textContainer: {
-      borderWidth: 1,
-      paddingBottom: 10,
-      marginBottom: 10,
-      flex: 1,
-      borderRadius: 10,
-      paddingHorizontal: 15,
-      borderColor: theme.highlight,
-      borderRadius: 10,
-    },
-    listContent: {
-      paddingBottom: 10,
-    },
-    buttonContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginTop: 10,
-      paddingHorizontal: '5%',
-    },
-    showButton: {
-      paddingVertical: 10,
-      paddingHorizontal: 15,
-      backgroundColor: theme.primary,
-      borderRadius: 5,
-    },
-    collapseButton: {
-      paddingVertical: 10,
-      paddingHorizontal: 15,
-      backgroundColor: theme.warning,
-      borderRadius: 5,
-    },
-    refreshButton: {
-      paddingVertical: 10,
-      paddingHorizontal: 15,
-      backgroundColor: theme.secondary,
-      borderRadius: 5,
-    },
-    buttonText: {
-      color: theme.buttonText,
-      fontWeight: 'bold',
-    },
-    separator: {
-      width: 1,
-      height: '100%',
-      backgroundColor: theme.separator,
-    },
+    icon: {
+      flex: 0.075
+    }
   });
 
-export default Home;
+export default Tester;

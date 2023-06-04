@@ -8,8 +8,8 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./app/assets/splashlt.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#000"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -19,10 +19,11 @@
     },
     "android": {
       "package": "com.trackmeister",
-           "config": {
-          "googleMaps": {
-              "apiKey": "AIzaSyAGQs7_a1qpQumNVgubJ2ub2Egqc1fx12I"
-          }
+      "googleServicesFile": "./app/config/google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAGQs7_a1qpQumNVgubJ2ub2Egqc1fx12I"
+        }
       },
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/adaptive-icon.png",
@@ -30,13 +31,15 @@
       }
     },
     "web": {
-      "favicon": "./app/assets/favicon.png",
-      "config": {
-        "firebase": "./app/data/firebaseConfig"
-      }
+      "favicon": "./app/assets/favicon.png"
     },
     "plugins": [
       "@react-native-firebase/app"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0117801f-6562-41d0-82f4-3b43e3408a7e"
+      }
+    }
   }
 }

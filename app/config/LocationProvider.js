@@ -1,29 +1,26 @@
-import React, { useState, useEffect, createContext } from 'react';
 import * as Location from 'expo-location';
 
-const LocationContext = createContext();
-
-const LocationProvider = ({ children }) => {
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-  }, []);
-
-  return (
-    <LocationContext.Provider value={location}>
-      {children}
-    </LocationContext.Provider>
-  );
+export const LocationProvider = async () => {
+  try {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      // Display alert or navigate to location off screen
+      // Example with Alert component
+      Alert.alert(
+        'Location Services Off',
+        'Please enable location services to use this app.',
+        [
+          {
+            text: 'OK',
+            onPress: () => console.log('OK Pressed'),
+          },
+        ]
+      );
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error('Error requesting location permission:', error);
+    return false;
+  }
 };
-
-export { LocationProvider, LocationContext };

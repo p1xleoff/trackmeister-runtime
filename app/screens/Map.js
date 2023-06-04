@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
-import MapView, { Marker, Circle } from 'react-native-maps';
+import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import themeContext from "../config/themeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import SearchBar from '../components/SearchBar';
 import { getDatabase, ref, onValue, off } from 'firebase/database';
 import MapViewDirections from 'react-native-maps-directions';
-import { GMAPS_KEY } from '@env';
 
 const MapScreen = ({ route }) => {
   const { busStop } = route?.params ?? {};
@@ -92,6 +91,7 @@ const MapScreen = ({ route }) => {
           showsCompass= {true}
           showsUserLocation={true}
           showsMyLocationButton={false}
+          provider={PROVIDER_GOOGLE}
         >
           {busStops.map((stop) => (
             <Marker
@@ -126,7 +126,7 @@ const MapScreen = ({ route }) => {
                 latitude: selectedBusStop.latitude,
                 longitude: selectedBusStop.longitude,
               }}
-              apikey={GMAPS_KEY}
+              apikey='AIzaSyAGQs7_a1qpQumNVgubJ2ub2Egqc1fx12I'
               strokeWidth={4}
               strokeColor="blue"
             />

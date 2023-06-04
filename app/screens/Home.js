@@ -6,6 +6,7 @@ import * as Location from 'expo-location';
 import { getDatabase, ref, onValue, off } from 'firebase/database';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
+import { LocationProvider } from '../config/LocationProvider';
 
 const Home = () => {
   const theme = useContext(themeContext);
@@ -18,18 +19,20 @@ const Home = () => {
   const toBusStops = () => {
     navigation.navigate("Stops");
   };  
+  
   useEffect(() => {
-    getUserLocation();
+    getLocationPermissionAndFetchData();
   }, []);
+
+  const getLocationPermissionAndFetchData = async () => {
+    const granted = await LocationProvider();
+    if (granted) {
+      getUserLocation();
+    }
+  };
 
   const getUserLocation = async () => {
     try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.error('Permission to access location was denied');
-        return;
-      }
-
       const { coords } = await Location.getCurrentPositionAsync();
 
       const stops = await fetchNearestStops(coords.latitude, coords.longitude);
@@ -38,7 +41,7 @@ const Home = () => {
       console.error('Error getting user location:', error);
     }
   };
-
+  
   const fetchNearestStops = async (latitude, longitude) => {
     try {
       const db = getDatabase();
@@ -183,6 +186,10 @@ const Home = () => {
         ) : (
           <Text style={styles.text}>Loading nearest stops...</Text>
         )}
+
+      </View>
+      <View>
+        <Text style={styles.topText}>Pinned Stops</Text>
 
       </View>
     </View>

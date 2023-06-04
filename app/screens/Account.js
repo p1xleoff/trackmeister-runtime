@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { StyleSheet, View, Text, Image,TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Image } from "react-native";
 import {
   Avatar,
   Divider,
@@ -69,10 +69,9 @@ function Account() {
         <Avatar.Icon style={styles.accountIcon} size={75} icon="account" />
         <View style={styles.accountHeader}>
           <Text onPress={toProfile} style={styles.headerText}>{auth.currentUser?.email}</Text>
-          <TouchableOpacity onPress={handleSignOut}><Text style={styles.headerNumber}>Log Out</Text></TouchableOpacity>
         </View>
       </View>
-      <Divider style={{ backgroundColor: "black", height: 1 }} />
+      <Divider style={{ backgroundColor: "black", height: 1, marginVertical: 10, width: '90%', alignSelf: 'center' }} />
       <View>
         <View style={styles.item}>
           <List.Item
@@ -84,8 +83,18 @@ function Account() {
             )}
           />
         </View>
+            <View style={[styles.item]}>
+              <List.Item
+                onPress={toStops}
+                title="Stops"
+                titleStyle={styles.itemText}
+                left={() => (
+                <MaterialCommunityIcons style={styles.icon} name="bus-stop-covered" />
+                )}
+                />
+            </View>
 
-        <View style={styles.item}>
+        {/* <View style={styles.item}>
           <List.Item
             onPress={toTripPlanner}
             title="Trip Planner"
@@ -94,21 +103,7 @@ function Account() {
               <MaterialCommunityIcons style={styles.icon} name="bus-clock" />
             )}
           />
-        </View>
-
-        <View style={styles.item}>
-          <List.Item
-            onPress={toStops}
-            title="Stops"
-            titleStyle={styles.itemText}
-            left={() => (
-              <MaterialCommunityIcons
-                style={styles.icon}
-                name="bus-stop-covered"
-              />
-            )}
-          />
-        </View>
+        </View> */}
 
         <View style={styles.item}>
           <List.Item
@@ -121,6 +116,7 @@ function Account() {
           />
         </View>
       </View>
+      <Divider style={{ backgroundColor: "black", height: 1, marginVertical: 10, width: '90%', alignSelf: 'center' }} />
       <View>
         <View style={styles.item}>
           <List.Item
@@ -141,7 +137,7 @@ function Account() {
             )}
           />
         </View>
-        <View>
+        <View style={styles.item}>
           <Portal>
             <Modal
               visible={visible}
@@ -174,7 +170,7 @@ function Account() {
             )}
           />
         </View>
-
+        <Divider style={{ backgroundColor: "black", height: 1, marginVertical: 10, width: '90%', alignSelf: 'center' }} />
         <View style={styles.item}>
           <Portal>
             <Modal
@@ -205,6 +201,16 @@ function Account() {
             titleStyle={styles.itemText}
             left={() => (
               <MaterialCommunityIcons style={styles.icon} name="information" />
+            )}
+          />
+        </View>
+        <View style={styles.item}>
+          <List.Item
+            onPress={handleSignOut}
+            title="Log Out"
+            titleStyle={styles.itemText}
+            left={() => (
+              <MaterialCommunityIcons style={styles.icon} name="logout-variant" />
             )}
           />
         </View>
@@ -244,12 +250,11 @@ StyleSheet.create({
     color: theme.option,
   },
   item: {
-    fontSize: 50,
-    fontWeight: "bold",
+    justifyContent: 'center',
+    marginHorizontal: 20
   },
   itemText: {
-    fontSize: 22,
-    fontWeight: "400",
+    fontWeight: "700",
     color: theme.color,
   },
   themeModal: {
@@ -263,7 +268,7 @@ StyleSheet.create({
   icon: {
     fontSize: 24,
     color: theme.color,
-    marginLeft: "5%",
+    marginHorizontal: '2%'
   },
   aboutContainer: {
     flexDirection: 'row',
