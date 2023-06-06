@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Trackmeister",
+    "slug": "Trackmeister",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./app/assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./app/assets/splashlt.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.trackmeister",
+           "config": {
+          "googleMaps": {
+              "apiKey": "AIzaSyAGQs7_a1qpQumNVgubJ2ub2Egqc1fx12I"
+          }
+      },
+      "adaptiveIcon": {
+        "foregroundImage": "./app/assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./app/assets/favicon.png",
+      "config": {
+        "firebase": "./app/data/firebaseConfig"
+      }
+    },
+    "plugins": [
+      "@react-native-firebase/app"
+    ]
+  }
+}
