@@ -9,7 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 import { LocationProvider } from '../config/LocationProvider';
 
 const Home = () => {
-  const theme = useTheme();
+  const theme = useContext(themeContext);
   const styles = getStyles(theme);
   const [nearestStops, setNearestStops] = useState([]);
   const [visibleStops, setVisibleStops] = useState(2);
