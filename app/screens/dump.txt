@@ -1,0 +1,496 @@
+//account lists
+<View style={styles.item}>
+<Text style={styles.text}>
+    Choose Language
+</Text>
+</View>
+<View style={styles.item}>
+<Text style={styles.text}>
+    Support
+</Text>
+</View>
+<Divider style={{backgroundColor: 'black', height: 1}}/>
+<View style={styles.item}>
+<Text style={styles.text}>
+    Choose Theme
+</Text>
+</View>
+<View style={styles.item}>
+<Text style={styles.text}>
+    About
+</Text>
+</View>
+
+//login
+if (!email || !password) {
+    Alert.alert('Please enter an email and password');
+    return;
+  }
+  if (!isValidEmail(email)) {
+    Alert.alert('Please enter a valid email address');
+    return;
+  }
+
+  if (!isValidPassword(password)) {
+    Alert.alert('Incorrect Password');
+    return;
+  }
+
+  //
+  const isValidEmail = (email) => {
+    const emailRegex = /\S+@\S+\.\S+/;
+    return emailRegex.test(email);
+  };
+  
+  const isValidPassword = (password) => {
+    return password.length >= 6;
+  };
+
+  //api url
+  `https://maps.googleapis.com/maps/api/place/textsearch/json?key=YOUR_API_KEY&query=${searchQuery} bus stop`
+
+
+///////////////////////////////////
+**********************search bus stops + list***************
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, FlatList, StyleSheet, StatusBar, ActivityIndicator } from 'react-native';
+import { getDatabase, ref, onValue, off } from 'firebase/database';
+import { Searchbar } from 'react-native-paper';
+import themeContext from "../config/themeContext";
+import { useNavigation } from '@react-navigation/native';
+
+const db = getDatabase();
+
+export default function Search() {
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme);
+  const [data, setData] = useState(null);
+  const [filteredData, setFilteredData] = useState(null);
+  const [searchText, setSearchText] = useState('');
+  const [isMounted, setIsMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigation = useNavigation();
+
+  const toLanding = () => {
+    navigation.navigate('Landing');
+  };
+
+  useEffect(() => {
+    setIsMounted(true);
+
+    const starCountRef = ref(db, 'busStops');
+    onValue(starCountRef, (snapshot) => {
+      const data = snapshot.val();
+      setData(data);
+      setFilteredData(data);
+      setIsLoading(false);
+    });
+
+    return () => {
+      setIsMounted(false);
+      off(starCountRef);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      const filteredResults = data.filter((item) => {
+        return (
+          item.stopName.toLowerCase().includes(searchText.toLowerCase()) ||
+          item.address.toLowerCase().includes(searchText.toLowerCase())
+        );
+      });
+      setFilteredData(filteredResults);
+    }
+  }, [searchText]);
+
+  const renderItem = ({ item }) => {
+    return (
+      <View style={{ padding: 10 }}>
+        <Text style={styles.title}>{item.stopName}</Text>
+        <Text style={styles.text}>{item.address}</Text>
+      </View>
+    );
+  };
+
+  return ( 
+    <View style={styles.container}>
+      {isLoading ? null : (
+        <View style={styles.searchContainer}>
+          <Searchbar
+            style={styles.searchBar}
+            onChangeText={(text) => setSearchText(text)}
+            value={searchText}
+            placeholder="Search for stops"
+            placeholderTextColor={theme.subtext}
+            iconColor={theme.subtext}
+            icon="arrow-left"
+            onIconPress={toLanding}
+          />
+        </View>
+      )}
+      {(isLoading ? null :  (
+      <View style={styles.headerContainer}>
+      <Text style={styles.header}>Bus Stops</Text>
+    </View>
+      ))}
+      {isLoading ? (
+        <ActivityIndicator style={styles.loader} size="large" color={theme.accent} />
+      ) : (
+        <FlatList
+          style={styles.list}
+          data={Object.values(filteredData)}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      )}
+    </View>
+  );
+}
+
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.background,
+      paddingTop: 10
+    },
+    title: {
+      fontWeight: 'bold',
+      color: theme.color
+    },
+    searchBar: {
+      backgroundColor: theme.barColor,
+    },
+    searchContainer:  {
+      alignItems: 'center',
+      marginHorizontal: '5%',
+      marginBottom: '5%',
+      borderRadius: 30,
+      elevation: 10,
+    },
+    list: {
+      marginHorizontal: '5%',
+      color: theme.color
+    },
+    headerContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 10,
+      borderBottomWidth: 1,
+      borderColor: theme.color
+    },
+    header: {
+      fontWeight: 'bold',
+      fontSize: 16,
+      color: theme.accent,
+      marginBottom: 10
+    },
+    loader: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    text: {
+      color: theme.subtext
+    },
+  });
+
+//////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////
+*************old map screen************************
+import React, { useEffect, useState, useContext } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import { requestForegroundPermissionsAsync, getLastKnownPositionAsync, watchPositionAsync } from 'expo-location';
+import { getDatabase, ref, onValue, off } from 'firebase/database';
+import themeContext from "../config/themeContext";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import SearchBar from '../components/SearchBar';
+
+const Map = () => {
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme);
+
+  const [busStops, setBusStops] = useState([]);
+  const [userLocation, setUserLocation] = useState(null);
+
+  useEffect(() => {
+    const busStopsRef = ref(getDatabase(), 'busStops');
+
+    const handleData = (snapshot) => {
+      const busStopsData = snapshot.val();
+      if (busStopsData) {
+        const busStopsArray = Object.values(busStopsData);
+        setBusStops(busStopsArray);
+      }
+    };
+
+    onValue(busStopsRef, handleData);
+
+    // Request location permissions
+    const requestLocationPermission = async () => {
+      const { status } = await requestForegroundPermissionsAsync();
+      if (status === 'granted') {
+        // Get the user's last known position
+        const location = await getLastKnownPositionAsync({});
+        if (location) {
+          setUserLocation(location.coords);
+        }
+        // Watch for location updates
+        const locationWatchId = watchPositionAsync({}, (location) => {
+          setUserLocation(location.coords);
+        });
+        return () => {
+          off(busStopsRef, 'value', handleData);
+          // Clear the location watch when the component unmounts
+          locationWatchId.remove();
+        };
+      }
+    };
+
+    requestLocationPermission();
+  }, []);
+
+  const focusUserLocation = () => {
+    if (userLocation) {
+      mapRef.current.animateToRegion({
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    }
+  };
+  const mapRef = React.createRef();
+
+  return (
+    <View style={styles.container}>
+      {userLocation && (
+        <MapView
+          ref={mapRef}
+          style={styles.map}
+          initialRegion={{
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          showsCompass= {true}
+          showsUserLocation={true}
+          loadingEnabled={true}
+          showsMyLocationButton={false}
+        >
+          {busStops.map((busStops) => (
+            <Marker
+              key={busStops.stopId}
+              coordinate={{ latitude: busStops.latitude, longitude: busStops.longitude }}
+              title={busStops.stopName}
+              description={busStops.address}
+              pinColor='blue'
+            />
+          ))}
+        </MapView>
+      )}
+      {!userLocation && <ActivityIndicator style={styles.loader} size="large" color={theme.accent} />}
+      <View style={styles.searchBarContainer}>
+        <View style={styles.searchBar}>
+        <SearchBar />
+        </View>
+      </View> 
+      <View style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.button} onPress={focusUserLocation}>
+        <View style={styles.buttonContent}>
+        <MaterialCommunityIcons style={styles.icon} name='crosshairs-gps'/>
+        <Text style={styles.buttonText}>Focus On Your Location</Text>
+        </View>
+    </TouchableOpacity>      
+        </View>
+    </View>
+  );
+};
+
+const getStyles = (theme) =>
+  StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    flex: 1,
+  },
+  searchBarContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 10,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  buttonContent:  {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: theme.accent,
+    padding: 16,
+    borderRadius: 29,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold'
+  },
+  icon: {
+    fontSize: 22,
+    paddingRight: 5,
+    color: '#fff',
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+export default Map;
+//////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////
+///////////search component initial with route to map, working////////////////////
+import React, { useEffect, useState, useContext } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, StatusBar, ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { getDatabase, ref, onValue, off } from 'firebase/database';
+import { Searchbar } from 'react-native-paper';
+import themeContext from "../config/themeContext";
+
+const Search = () => {
+  const [busStops, setBusStops] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [loading, setLoading] = useState(true); // Loading state
+  const navigation = useNavigation();
+
+  const theme = useContext(themeContext);
+  const styles = getStyles(theme);
+
+  useEffect(() => {
+    const db = getDatabase();
+    const busStopsRef = ref(db, 'busStops');
+    onValue(busStopsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const busStopsArray = Object.keys(data).map((key) => ({
+          id: key,
+          ...data[key],
+        }));
+        setBusStops(busStopsArray);
+      }
+      setLoading(false); // Set loading to false when data is loaded
+    });
+
+    return () => {
+      off(busStopsRef);
+    };
+  }, []);
+
+  const handleBusStopSelect = (busStop) => {
+    navigation.navigate('Map', { busStop });
+  };
+
+  const handleSearchTextChange = (text) => {
+    setSearchText(text);
+  };
+
+  const toLanding = () => {
+    navigation.navigate('Landing');
+  };
+
+  const filteredBusStops = busStops.filter(
+    (busStop) =>
+      busStop.stopName.toLowerCase().includes(searchText.toLowerCase()) ||
+      busStop.address.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const renderBusStopItem = ({ item }) => (
+    <TouchableOpacity onPress={() => handleBusStopSelect(item)} style={styles.busStopItem}>
+      <Text style={styles.title}>{item.stopName}</Text>
+      <Text style={styles.subText}>{item.address}</Text>
+    </TouchableOpacity>
+  );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={theme.accent} />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.searchContainer}>
+        <Searchbar
+          style={styles.searchBar}
+          onChangeText={handleSearchTextChange}
+          value={searchText}
+          placeholder="Search for stops"
+          placeholderTextColor={theme.subtext}
+          iconColor={theme.subtext}
+          icon="arrow-left"
+          onIconPress={toLanding}
+        />
+      </View>
+      <FlatList data={filteredBusStops} keyExtractor={(item) => item.id} renderItem={renderBusStopItem} />
+    </View>
+  );
+};
+
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.background,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: theme.back,
+    },
+    searchBar: {
+      backgroundColor: theme.barColor,
+    },
+    searchContainer: {
+      marginHorizontal: '5%',
+      marginBottom: '5%',
+      borderRadius: 30,
+      elevation: 10,
+      top: 10,
+    },
+    busStopItem: {
+      marginHorizontal: '6%',
+      paddingVertical: 16,
+    },
+    title: {
+      color: theme.color,
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    subText: {
+      color: theme.subtext,
+    },
+  });
+
+export default Search;
+////////////////////////////////////////////////////////////////////////////
