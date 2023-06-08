@@ -22,7 +22,7 @@ const ActiveRoute = () => {
   return(
   <ScrollView>
     <View>
-      <View style={styles.ticket}>
+      {/* <View style={styles.ticket}>
         <View>
           <Text style={styles.title}>Single Journey Ticket</Text>
           <Text style={styles.text}>GA - 03 - X - 1337</Text>
@@ -54,6 +54,11 @@ const ActiveRoute = () => {
           <Text style={styles.qrDate}>28 March 2023, 07:12:11 PM</Text>
           <Image source={require("../assets/qr.png")} />
         </View>
+      </View> */}
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <Text style={styles.text}>
+        No active tickets
+      </Text>
       </View>
     </View>
   </ScrollView>

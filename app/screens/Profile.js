@@ -13,16 +13,6 @@ function Profile()  {
 
   //firebase
   const auth = getAuth();
-  const handleSignOut = () => {
-    signOut(auth)
-      .then(() => {
-        navigation.replace("Login");
-        console.log('user signed out');
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
 
 return  (
     <View style={styles.container}>
@@ -31,11 +21,6 @@ return  (
             <Text style={styles.text}>{auth.currentUser?.email}</Text>
             <Text style={styles.subText}>Email</Text>
           </View>          
-          <View style={styles.details}>
-            <Text style={styles.text}>9876543210</Text>
-            
-            <Text style={styles.subText}>Phone</Text>
-          </View>
     </View>
     );
 }

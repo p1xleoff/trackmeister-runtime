@@ -105,14 +105,14 @@ const Home = () => {
     const distance = earthRadius * c;
 
     // Convert distance to meters and round to two decimal places
-    return Math.round(distance * 1000);
+    return Math.round(distance * 10) / 10;
   };
 
   const renderStopItem = ({ item }) => (
     <TouchableOpacity style={styles.textContainer}>
       <Text style={[styles.itemName, styles.text]}>{item.stopName}</Text>
       <Text style={[styles.itemAddress, styles.text]}>{item.address}</Text>
-      <Text style={[styles.itemDistance, styles.text]}>{item.distance} m away</Text>
+      <Text style={[styles.itemDistance, styles.text]}>{item.distance} km away</Text>
     </TouchableOpacity>
   );
 
@@ -186,11 +186,6 @@ const Home = () => {
         ) : (
           <Text style={styles.text}>Loading nearest stops...</Text>
         )}
-
-      </View>
-      <View>
-        <Text style={styles.topText}>Pinned Stops</Text>
-
       </View>
     </View>
   );

@@ -30,9 +30,6 @@ const Register = () => {
   const toLanding = () => {
     navigation.navigate('Landing');
   };  
-  const toPhoneAuth = () => {
-    navigation.navigate('PhoneAuth');
-  };
   //sign up
   const handleSignUp = () => {
     if (!email || !password) {
@@ -102,10 +99,9 @@ const Register = () => {
         <TextInput.Icon 
           icon={passwordVisible ?'eye' : 'eye-off'} 
           onPress={() => setPasswordVisible(!passwordVisible)}/>
-        }     
-        />             
-       
-      <TextInput
+      }     
+        />                   
+      {/* <TextInput
         style={styles.input}
         mode="outlined"
         label="Phone Number"
@@ -115,7 +111,7 @@ const Register = () => {
         textColor={theme.color}
         value={phoneNumber}
         onChangeText={text => setPhoneNumber(text)}
-      />
+    /> */}
       <View>
       <TouchableOpacity 
         style={styles.button}
@@ -130,9 +126,9 @@ const Register = () => {
                   style={{fontWeight: 'bold', fontSize: 24}}> Log In
                 </Text>
         </Text>
-        <TouchableOpacity style={styles.button} onPress={toLanding}>
+        {/* <TouchableOpacity style={styles.button} onPress={toLanding}>
           <Text style={styles.buttonText}>Home</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );

@@ -9,7 +9,6 @@ import themeContext from './app/config/themeContext';
 import theme from './app/config/theme';
 import { DefaultTheme } from 'react-native-paper';
 
-
 export default function App() {
 
   const [ mode, setMode ] = useState(false);

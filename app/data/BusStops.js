@@ -55,6 +55,7 @@ export default function BusStops() {
           data={Object.values(data)}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
         />
       )}
     </View>

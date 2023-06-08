@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "285201920604",
+    "firebase_url": "https://trackmeister0-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "trackmeister0",
+    "storage_bucket": "trackmeister0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285201920604:android:14c4d8b97877c0a97fec99",
+        "android_client_info": {
+          "package_name": "com.trackmeister.go"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285201920604-j1n0qbs4lpoog6h5hn4hnu4i7tj75rru.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_2Sd84F1d8bVAuCZ8Df0hmupCgLXhlnU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285201920604-j1n0qbs4lpoog6h5hn4hnu4i7tj75rru.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

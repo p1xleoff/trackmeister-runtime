@@ -2,7 +2,7 @@
   "expo": {
     "name": "Trackmeister",
     "slug": "Trackmeister",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,25 +18,40 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.trackmeister",
-           "config": {
-          "googleMaps": {
-              "apiKey": "AIzaSyAGQs7_a1qpQumNVgubJ2ub2Egqc1fx12I"
-          }
+      "package": "com.trackmeister.go",
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAGQs7_a1qpQumNVgubJ2ub2Egqc1fx12I"
+        }
       },
       "adaptiveIcon": {
-        "foregroundImage": "./app/assets/adaptive-icon.png",
+        "foregroundImage": "./app/assets/icon.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
       "favicon": "./app/assets/favicon.png",
       "config": {
-        "firebase": "./app/data/firebaseConfig"
+        "firebase": {
+          "apiKey": "AIzaSyCkaH9FzCFL6XwUYHDg-znCpgmJEIot4aE",
+          "authDomain": "trackmeister0.firebaseapp.com",
+          "projectId": "trackmeister0",
+          "storageBucket": "trackmeister0.appspot.com",
+          "databaseURL": "https://trackmeister0-default-rtdb.asia-southeast1.firebasedatabase.app",
+          "messagingSenderId": "285201920604",
+          "appId": "1:285201920604:web:b5f3a432766bc58e7fec99",
+          "measurementId": "G-KPHRT4BJZJ"
+        }
       }
     },
     "plugins": [
       "@react-native-firebase/app"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0117801f-6562-41d0-82f4-3b43e3408a7e"
+      }
+    }
   }
 }

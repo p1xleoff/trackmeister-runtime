@@ -1,19 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Alert, StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { useNavigation } from '@react-navigation/native';
 
 import themeContext from "../config/themeContext";
 
-
 const Login = () => {
-  
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const navigation = useNavigation();
   const toRegister = () => {
@@ -23,33 +22,31 @@ const Login = () => {
     navigation.navigate('Landing');
   };
 
+  const auth = getAuth();
+
   useEffect(() => {
-    const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
-      navigation.replace("Landing")    
+        navigation.replace("Landing");
       }
     });
-  }, [] )
+  }, []);
 
-  //logging in
-const handleLogIn = () => {  
+  const handleLogIn = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        // Save the user's login info to local storage
+        console.log('Logged in with: ', user.email);
+        Alert.alert('Welcome back!');
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        Alert.alert('Incorrect Email or Password');
+      });
+  };
 
-const auth = getAuth();
-signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    // ...
-    console.log('Logged in with: ', user.email);
-    Alert.alert('Welcome back!');
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    Alert.alert('Incorrect Email or Password');
-  });
-};
   return (
     <View style={styles.container}>
       <Text style={styles.title}>LogIn</Text>
@@ -73,7 +70,12 @@ signInWithEmailAndPassword(auth, email, password)
         outlineStyle={styles.inputOutline}
         activeOutlineColor={theme.accent}
         onChangeText={text => setPassword(text)}
-        secureTextEntry
+        secureTextEntry={!passwordVisible}
+        right={
+          <TextInput.Icon 
+            icon={passwordVisible ?'eye' : 'eye-off'} 
+            onPress={() => setPasswordVisible(!passwordVisible)}/>
+          } 
       />
       <View>
         <TouchableOpacity 
@@ -114,13 +116,13 @@ StyleSheet.create({
     backgroundColor: theme.accent,
     paddingVertical: '3%',
     elevation: 10,
-},  
+  },  
   buttonText: {
     fontSize: 25,
     fontWeight: 'bold',
     color: 'white',
     letterSpacing: 1,
-},
+  },
   title: {
     marginVertical: '20%',
     width: '100%',
@@ -128,10 +130,10 @@ StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 1,
     color: theme.accent,
-},
+  },
   textWrap: {
     alignItems: 'center',
-},
+  },
   text: {
     color: theme.color,
     fontSize: 20,
@@ -142,4 +144,4 @@ StyleSheet.create({
   }
 });
 
-export default Login; 
+export default Login;

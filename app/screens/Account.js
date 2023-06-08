@@ -15,6 +15,7 @@ import { EventRegister } from "react-native-event-listeners";
 import { getAuth, signOut } from 'firebase/auth';
 
 import themeContext from "../config/themeContext";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 function Account() {
   //theme modal
@@ -57,7 +58,6 @@ function Account() {
     signOut(auth)
       .then(() => {
         navigation.replace("Login");
-        console.log('user signed out');
       })
       .catch((error) => {
         console.log(error);
@@ -65,12 +65,15 @@ function Account() {
   }
   return (
     <View style={styles.container}>
+          <TouchableOpacity onPress={toProfile}>
       <View style={styles.accountContainer}>
-        <Avatar.Icon style={styles.accountIcon} size={75} icon="account" />
+        <Avatar.Icon style={styles.accountIcon} size={50} icon="account" />
         <View style={styles.accountHeader}>
-          <Text onPress={toProfile} style={styles.headerText}>{auth.currentUser?.email}</Text>
+            <Text style={styles.headerText}>{auth.currentUser?.email}</Text>
+            <Text style={styles.subText}>View Profile</Text>
         </View>
       </View>
+          </TouchableOpacity>
       <Divider style={{ backgroundColor: "black", height: 1, marginVertical: 10, width: '90%', alignSelf: 'center' }} />
       <View>
         <View style={styles.item}>
@@ -149,7 +152,7 @@ function Account() {
                 Dark Mode
               </Text>
               <Switch
-              color={'#ffbf00'}
+              color={theme.accent}
               value={mode}
               onValueChange={(value) => {
               setMode(value);
@@ -186,10 +189,7 @@ function Account() {
               </Text>
               <Text style={styles.aboutText}>Build: 0.1.0 Dev</Text> 
               <View style={styles.buttonContainer}>
-                <Button onPress={hideAboutModal} style={styles.button} labelStyle={styles.buttonText}>
-                  GITHUB
-                </Button>
-                <Button onPress={hideAboutModal} style={styles.button} labelStyle={styles.buttonText}>
+                <Button onPress={hideAboutModal} labelStyle={styles.buttonText}>
                   CLOSE
                 </Button>
               </View>
@@ -233,6 +233,7 @@ StyleSheet.create({
   },
   accountHeader: {
     justifyContent: "center",
+    flexShrink: 1
   },
   accountIcon: {
     marginRight: 15,
@@ -241,13 +242,7 @@ StyleSheet.create({
   headerText: {
     fontSize: 20,
     fontWeight: "bold",
-    color: theme.color,
-    paddingBottom: 10, 
-  },
-  headerNumber: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.option,
+    color: theme.accent,
   },
   item: {
     justifyContent: 'center',
@@ -280,20 +275,24 @@ StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     marginTop: 10,
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   },
   buttonText: { 
-    fontSize: 18,
+    color: theme.accent
   },
   aboutText:  {
-    fontSize: 20,
+    fontSize: 14,
     marginVertical: 5,
     fontWeight: 'bold',
     color: theme.color,
   },
   logo: {
-    height: 70,
-    width: 50,
+    height: 30,
+    width: 30,
+    marginRight: 10
+  },
+  subText:  {
+    color: theme.option
   }
 });
 
