@@ -7,7 +7,7 @@ import Demap from '../config/Demap'
 
 const initialLayout = { width: Dimensions.get('window').width };
 
-const Stops = () => {
+function Stops () {
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
   const [index, setIndex] = useState(0);

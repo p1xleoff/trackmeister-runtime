@@ -1,7 +1,5 @@
 import React from 'react';
 import { View, StyleSheet, Image, Pressable, StatusBar, Text } from 'react-native';
-
-import { TextInput, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
 //import theme from '../config/theme';

@@ -1,18 +1,7 @@
 import React, { useContext } from 'react';
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  Text,
-  Image,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, Dimensions, Text, Image, ScrollView } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import {
-  DefaultTheme,
-  Divider,
-  Provider as PaperProvider,
-} from "react-native-paper";
+import { DefaultTheme, Divider, Provider as PaperProvider } from "react-native-paper";
 import { PagerView } from "react-native-pager-view";
 import themeContext from "../config/themeContext";
 

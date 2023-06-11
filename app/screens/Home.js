@@ -8,7 +8,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { LocationProvider } from '../config/LocationProvider';
 
-const Home = () => {
+function Home () {
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
   const [nearestStops, setNearestStops] = useState([]);
@@ -16,10 +16,15 @@ const Home = () => {
   const [showMore, setShowMore] = useState(true);
 
   const navigation = useNavigation();
+  
   const toBusStops = () => {
     navigation.navigate("Stops");
   };  
   
+  const toRequest = () => {
+    navigation.navigate("Request")
+  };
+
   useEffect(() => {
     getLocationPermissionAndFetchData();
   }, []);
@@ -142,7 +147,9 @@ const Home = () => {
       <SearchBar />
       <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
         <Text style={styles.topText}>Nearby Stops</Text>
-        <TouchableOpacity onPress={toBusStops}><Text style={[styles.floatButton, styles.buttonText]}>See all</Text></TouchableOpacity>
+        <TouchableOpacity onPress={toBusStops}>
+          <Text style={[styles.floatButton, styles.buttonText]}>See all</Text>
+          </TouchableOpacity>
         </View>  
       <View style={styles.listContainer}>
         {nearestStops.length > 0 ? (
@@ -186,6 +193,14 @@ const Home = () => {
         ) : (
           <Text style={styles.text}>Loading nearest stops...</Text>
         )}
+      </View>
+      <View style={{marginHorizontal: '5%'}}>
+        <TouchableOpacity onPress={toRequest}
+          style={{padding: 10, borderRadius: 9, backgroundColor: theme.accent, 
+              justifyContent: 'center', alignItems: 'center',
+              elevation: 9 }}>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#fff'}}>Request</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

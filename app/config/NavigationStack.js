@@ -14,7 +14,6 @@ import Map from '../screens/Map';
 import Login from '../screens/Login';
 import Register from '../screens/Register';
 import Home from '../screens/Home';
-import Places from '../screens/Places';
 import Profile from '../screens/Profile';
 import Tester from '../screens/Tester';
 import Search from '../components/Search';
@@ -36,7 +35,6 @@ export const NavigationStack = () => {
       <Stack.Screen name="Register" component={Register} options={{ header: () => null }} />
       <Stack.Screen name="Tickets" component={Tickets} />
       <Stack.Screen name="Stops" component={Stops} />
-      <Stack.Screen name="Places" component={Places} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Demap" component={Demap} options={{ headerTitle: 'Set Marker' }} />

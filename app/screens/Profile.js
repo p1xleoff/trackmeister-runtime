@@ -7,7 +7,7 @@ import themeContext from "../config/themeContext";
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const Profile = () => {
+function Profile () {
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
   const [name, setName] = useState('');

@@ -6,7 +6,7 @@ import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "fir
 
 import themeContext from "../config/themeContext";
 
-const Register = () => {
+function Register() {
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
   const [email, setEmail] = useState('')

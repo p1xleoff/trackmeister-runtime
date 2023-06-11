@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import themeContext from "../config/themeContext";
 
-const Login = () => {
+function Login() {
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
   const [passwordVisible, setPasswordVisible] = useState(false);
