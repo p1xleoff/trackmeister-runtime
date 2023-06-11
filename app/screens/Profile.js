@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, Button, Alert, TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
+import { View, Alert, TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
 import { auth } from '../data/firebaseConfig';
 import axios from 'axios';
-import { TextInput } from 'react-native-paper';
+import { TextInput, Avatar } from 'react-native-paper';
 import themeContext from "../config/themeContext";
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -97,21 +97,36 @@ const Profile = () => {
       }
     }
   };
-  const labelColor = theme.accent;
+
+  const renderProfilePicture = () => {
+    return (
+      <View style={styles.pictureContainer}>
+        <TouchableOpacity onPress={selectProfilePicture}>
+          { profilePicture ? (
+            <>
+              <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
+              <TouchableOpacity style={styles.cameraIconContainer} onPress={selectProfilePicture}>
+                <MaterialCommunityIcons color={"#000"} size={24} name="camera" />
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <Avatar.Icon style={styles.defaultProfilePicture} size={150} icon="account" />
+              <TouchableOpacity style={styles.cameraIconContainer} onPress={selectProfilePicture}>
+                <MaterialCommunityIcons color={'#000'} size={24} name="camera" />
+              </TouchableOpacity>
+            </>
+          )}
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={{alignItems: 'center'}}>
-        {profilePicture && (
-            <View style={styles.pictureContainer}>
-              <TouchableOpacity onPress={selectProfilePicture}>
-              <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
-              <TouchableOpacity style={styles.cameraIconContainer} onPress={selectProfilePicture}>
-                <MaterialCommunityIcons color={"#fff"} size={24} name="camera" />
-              </TouchableOpacity>
-              </TouchableOpacity>
-            </View>
-            )}
+            {renderProfilePicture()}
         </View>
         <TextInput
           style={styles.input}
@@ -176,14 +191,17 @@ const getStyles = (theme) =>
       marginVertical: 20,
       borderWidth: 2,
       borderColor: theme.accent,
-      backgroundColor: theme.color
+    },
+    defaultProfilePicture: {
+      backgroundColor: theme.color,
+      marginVertical: 20,
     },
     cameraIconContainer: {
       position: 'absolute',
       bottom: 20,
       right: 0,
       backgroundColor: theme.accent,
-      padding: 11,
+      padding: 10,
       borderRadius: 30,
     },
     input: {

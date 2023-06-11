@@ -1,19 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
-import {
-  Avatar,
-  Divider,
-  List,
-  Modal,
-  Portal,
-  Button,
-  Switch,
-} from "react-native-paper";
+import { Avatar, Divider, List, Modal, Portal, Button, Switch } from "react-native-paper";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { EventRegister } from "react-native-event-listeners";
 import { getAuth, signOut } from 'firebase/auth';
-
+import { auth } from '../data/firebaseConfig';
+import axios from 'axios';
 import themeContext from "../config/themeContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -21,8 +14,11 @@ function Account() {
   //theme modal
   const [visible, setVisible] = React.useState(false);
   const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);  
-  
+  const hideModal = () => setVisible(false);
+
+  const [name, setName] = useState('');
+  const [profilePicture, setProfilePicture] = useState('');
+
   //about modal
   const [aboutVisible, setAboutVisible] = React.useState(false);
   const showAboutModal = () => setAboutVisible(true);
@@ -36,9 +32,6 @@ function Account() {
   const toStops = () => {
     navigation.navigate("Stops");
   };  
-  const toTripPlanner = () => {
-    navigation.navigate("TripPlanner");
-  };  
   const toFavorites = () => {
     navigation.navigate("Favorites");
   };  
@@ -47,10 +40,24 @@ function Account() {
   };
 
   //theme radio button
-  const [value, setValue] = React.useState("first");
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
   const [ mode, setMode ]  = useState(false);
+
+  useEffect(() => {
+    // Fetch the current user's data from Firebase Realtime Database
+    const currentUser = auth.currentUser;
+    const databaseURL = 'https://trackmeister0-default-rtdb.asia-southeast1.firebasedatabase.app';
+    const endpoint = `${databaseURL}/users/${currentUser.uid}.json`;
+
+    axios
+      .get(endpoint)
+      .then((response) => {
+        const { name, profilePicture } = response.data || {};
+        setName(name || '');
+        setProfilePicture(profilePicture || '');
+      })
+  }, []);
 
   //firebase
   const auth = getAuth();
@@ -65,12 +72,21 @@ function Account() {
   }
   return (
     <View style={styles.container}>
-          <TouchableOpacity onPress={toProfile}>
+      <TouchableOpacity onPress={toProfile}>
       <View style={styles.accountContainer}>
-        <Avatar.Icon style={styles.accountIcon} size={50} icon="account" />
+            {profilePicture ? (
+          <Avatar.Image
+            style={styles.accountIcon}
+            size={75}
+            source={{ uri: profilePicture }}
+          />
+        ) : (
+          <Avatar.Icon style={styles.accountIcon} size={75} icon="account" />
+        )}
         <View style={styles.accountHeader}>
-            <Text style={styles.headerText}>{auth.currentUser?.email}</Text>
-            <Text style={styles.subText}>View Profile</Text>
+            <Text style={styles.headerText}>{name}</Text>
+            <Text style={{fontSize: 16, color: theme.color, fontWeight: '600'}}>{auth.currentUser?.email}</Text>
+            
         </View>
       </View>
           </TouchableOpacity>
@@ -240,13 +256,13 @@ StyleSheet.create({
     backgroundColor: theme.color,
   },
   headerText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     color: theme.accent,
   },
   item: {
     justifyContent: 'center',
-    marginHorizontal: 20
+    marginHorizontal: 20,
   },
   itemText: {
     fontWeight: "700",
@@ -291,9 +307,6 @@ StyleSheet.create({
     width: 30,
     marginRight: 10
   },
-  subText:  {
-    color: theme.option
-  }
 });
 
 export default Account;
