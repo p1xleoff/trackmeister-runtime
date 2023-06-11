@@ -36,10 +36,7 @@ const getStyles = (theme) =>
         marginHorizontal: '5%',
     },
     textContainer: {
-        borderWidth: 1,
-        borderRadius: 9,
-        height: 100,
-        borderColor: theme.color,
+        height: 100,   
         marginHorizontal: '5%'
     },
     text: {

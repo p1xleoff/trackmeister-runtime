@@ -19,7 +19,7 @@ import Profile from '../screens/Profile';
 import Tester from '../screens/Tester';
 import Search from '../components/Search';
 import pxInit from '../config/pxInit'
-
+import Request from '../screens/Request'
 
 const Stack = createStackNavigator();
 
@@ -27,8 +27,10 @@ export const NavigationStack = () => {
   return (
     <PaperProvider>
     <Stack.Navigator>
-      <Stack.Screen name="pxInit" component={pxInit} options={{ header: () => null }}/>
       <Stack.Screen name="Landing" component={Landing} options={{ header: () => null }} />
+      <Stack.Screen name="Request" component={Request} options={{ header: () => null }} />
+      <Stack.Screen name="Tester" component={Tester} />
+      <Stack.Screen name="pxInit" component={pxInit} options={{ header: () => null }}/>
       <Stack.Screen name="Login" component={Login} options={{ header: () => null }} />
       <Stack.Screen name="Search" component={Search} options={{ header: () => null }}/>
       <Stack.Screen name="Register" component={Register} options={{ header: () => null }} />
@@ -42,7 +44,6 @@ export const NavigationStack = () => {
       <Stack.Screen name="TripPlanner" component={TripPlanner} options={{ headerTitle: 'Trip Planner' }} />
       <Stack.Screen name="Welcome" component={Welcome} options={{ header: () => null }} />
       <Stack.Screen name="Map" component={Map} options={{ header: () => null }} />
-      <Stack.Screen name="Tester" component={Tester} options={{ header: () => null }}/>
     </Stack.Navigator>
     </PaperProvider>
   );
