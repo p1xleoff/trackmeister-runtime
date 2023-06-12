@@ -26,12 +26,12 @@ export const NavigationStack = () => {
   return (
     <PaperProvider>
     <Stack.Navigator>
-      <Stack.Screen name="Landing" component={Landing} options={{ header: () => null }} />
-      <Stack.Screen name="Request" component={Request} options={{ header: () => null }} />
-      <Stack.Screen name="Tester" component={Tester} />
       <Stack.Screen name="pxInit" component={pxInit} options={{ header: () => null }}/>
+      <Stack.Screen name="Landing" component={Landing} options={{ header: () => null }} />
       <Stack.Screen name="Login" component={Login} options={{ header: () => null }} />
+      <Stack.Screen name="Tester" component={Tester} />
       <Stack.Screen name="Search" component={Search} options={{ header: () => null }}/>
+      <Stack.Screen name="Request" component={Request} options={{ header: () => null }} />
       <Stack.Screen name="Register" component={Register} options={{ header: () => null }} />
       <Stack.Screen name="Tickets" component={Tickets} />
       <Stack.Screen name="Stops" component={Stops} />

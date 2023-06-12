@@ -5,7 +5,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { EventRegister } from "react-native-event-listeners";
 import { getAuth, signOut } from 'firebase/auth';
-import { auth } from '../data/firebaseConfig';
 import axios from 'axios';
 import themeContext from "../config/themeContext";
 import { TouchableOpacity } from "react-native-gesture-handler";

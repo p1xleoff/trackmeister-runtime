@@ -23,6 +23,9 @@ function Home () {
   
   const toRequest = () => {
     navigation.navigate("Request")
+  };  
+  const toProfile = () => {
+    navigation.navigate("Profile")
   };
 
   useEffect(() => {
@@ -198,8 +201,14 @@ function Home () {
         <TouchableOpacity onPress={toRequest}
           style={{padding: 10, borderRadius: 9, backgroundColor: theme.accent, 
               justifyContent: 'center', alignItems: 'center',
-              elevation: 9 }}>
+              elevation: 9, marginBottom: 10 }}>
           <Text style={{fontSize: 20, fontWeight: 'bold', color: '#fff'}}>Request</Text>
+        </TouchableOpacity>        
+        <TouchableOpacity onPress={toProfile}
+          style={{padding: 10, borderRadius: 9, backgroundColor: theme.accent, 
+              justifyContent: 'center', alignItems: 'center',
+              elevation: 9, marginBottom: 10}}>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#fff'}}>Profile</Text>
         </TouchableOpacity>
       </View>
     </View>
