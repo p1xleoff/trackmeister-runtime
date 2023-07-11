@@ -1,54 +1,74 @@
 import React, { useState } from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Button, Image } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import axios from 'axios';
 
-const Tester = () => {
-  const [responseData, setResponseData] = useState(null);
+const BusDetailsScreen = () => {
+  const [responseData, setResponseData] = useState([]);
 
   const makeApiRequest = async () => {
     try {
-      const url = 'http://65.1.176.163:3000/api';
-      const payload = {
-        VehicleRegNo: 'GA08V4978'
-      };
+      const timestamp = new Date().getTime();
+      const url = `http://65.1.176.163:3000/api?timestamp=${timestamp}`;
 
-      const response = await axios.post(url, payload);
-      console.log(response.data)
-      setResponseData(response.data);
+      const vehicleNumbers = ['GA08V4965', 'GA0B4966', 'GA08V4967', 'GA08V4968', 'GA08V4972', 'GA08V4973', 'GA08V4974',
+                              'GA08V4975', 'GA08V4976', 'GA08V4977', 'GA08V4978', 'GA08V4979', 'GA08V4980', 'GA08V4981',
+                              'GA08V4982', 'GA08V4983', 'GA08V4984', 'GA08V4985', 'GA08V4986', 'GA08V4987'];
+
+      const fetchedData = [];
+
+      for (const vehicleNumber of vehicleNumbers) {
+        const payload = {
+          VehicleRegNo: vehicleNumber
+        };
+
+        const response = await axios.post(url, payload);
+        // console.log(response.data);
+
+        if (response.data.VehicleDetail.length > 0) {
+          const vehicle = response.data.VehicleDetail[0];
+          if (vehicle.EngineStatus === 'On') {
+            fetchedData.push(vehicle);
+          }
+        }
+      }
+
+      //console.log(fetchedData);
+      setResponseData(fetchedData);
     } catch (error) {
       console.error(error);
     }
-    
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <MapView
-        style={{flex: 1}}
+        style={{ flex: 1 }}
         initialRegion={{
-          latitude: responseData?.VehicleDetail[0]?.Latitude || 0,
-          longitude: responseData?.VehicleDetail[0]?.Longitude || 0,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+          latitude: 15.4064, // Set the initial region's latitude
+          longitude: 73.9971, // Set the initial region's longitude
+          latitudeDelta: 0.0922, // Set the latitude delta
+          longitudeDelta: 0.0421, // Set the longitude delta
         }}
       >
-        {responseData && (
+        {responseData.map((bus, index) => (
           <Marker
+            key={index}
             coordinate={{
-              latitude: responseData.VehicleDetail[0].Latitude,
-              longitude: responseData.VehicleDetail[0].Longitude,
+              latitude: bus.Latitude, // Use the bus's latitude
+              longitude: bus.Longitude, // Use the bus's longitude
             }}
-          />
-        )}
+          >
+            <Image
+              source={require('../assets/bus-icon.png')} // Replace with your custom marker image
+              style={{ width: 55, height: 55 }} // Set the size of the marker image
+            />
+          </Marker>
+        ))}
       </MapView>
-
-      <View style={{position: 'absolute', top: 20, left: 20}}>
-        <Text>Tester</Text>
-        <Button onPress={makeApiRequest} title="Make API Request" />
-      </View>
+      <Button title="Fetch Data" onPress={makeApiRequest} />
     </View>
   );
 };
 
-export default Tester;
+export default BusDetailsScreen;

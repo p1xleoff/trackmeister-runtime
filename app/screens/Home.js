@@ -21,11 +21,14 @@ function Home () {
     navigation.navigate("Stops");
   };  
   
-  const toRequest = () => {
-    navigation.navigate("Request")
+  const toTester = () => {
+    navigation.navigate("Tester")
   };  
   const toProfile = () => {
     navigation.navigate("Profile")
+  };
+  const toRequest = () => {
+    navigation.navigate("Request")
   };
 
   useEffect(() => {
@@ -198,17 +201,17 @@ function Home () {
         )}
       </View>
       <View style={{marginHorizontal: '5%'}}>
-        <TouchableOpacity onPress={toRequest}
+        <TouchableOpacity onPress={toTester}
           style={{padding: 10, borderRadius: 9, backgroundColor: theme.accent, 
               justifyContent: 'center', alignItems: 'center',
               elevation: 9, marginBottom: 10 }}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#fff'}}>Request</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#fff'}}>Track Bus</Text>
         </TouchableOpacity>        
-        <TouchableOpacity onPress={toProfile}
+        <TouchableOpacity onPress={toRequest}
           style={{padding: 10, borderRadius: 9, backgroundColor: theme.accent, 
               justifyContent: 'center', alignItems: 'center',
               elevation: 9, marginBottom: 10}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#fff'}}>Profile</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#fff'}}>Request</Text>
         </TouchableOpacity>
       </View>
     </View>

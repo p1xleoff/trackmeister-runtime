@@ -1,7 +1,5 @@
 import React, { useContext } from "react";
 import { StyleSheet, View, Text } from "react-native";
-
-import SearchBar from "../components/SearchBar";
 import themeContext from "../config/themeContext";
 
 function Route() {
@@ -10,7 +8,6 @@ function Route() {
 
     return ( 
     <View style={styles.container}>
-    <SearchBar />
       <Text style={styles.topText}>My Routes</Text>
     <View style={styles.textContainer}>
       <View>
@@ -37,7 +34,8 @@ const getStyles = (theme) =>
     },
     textContainer: {
         height: 100,   
-        marginHorizontal: '5%'
+        marginHorizontal: '5%',
+        alignItems: 'center'
     },
     text: {
         fontSize: 16,

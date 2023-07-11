@@ -14,11 +14,13 @@ import Map from '../screens/Map';
 import Login from '../screens/Login';
 import Register from '../screens/Register';
 import Home from '../screens/Home';
+import Route from '../screens/Route';
 import Profile from '../screens/Profile';
 import Tester from '../screens/Tester';
 import Search from '../components/Search';
 import pxInit from '../config/pxInit'
 import Request from '../screens/Request'
+import Language from '../screens/Language'
 
 const Stack = createStackNavigator();
 
@@ -37,8 +39,10 @@ export const NavigationStack = () => {
       <Stack.Screen name="Stops" component={Stops} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Route" component={Route} />
       <Stack.Screen name="Demap" component={Demap} options={{ headerTitle: 'Set Marker' }} />
       <Stack.Screen name="Favorites" component={Favorites} />
+      <Stack.Screen name="Language" component={Language} />
       <Stack.Screen name="TripPlanner" component={TripPlanner} options={{ headerTitle: 'Trip Planner' }} />
       <Stack.Screen name="Welcome" component={Welcome} options={{ header: () => null }} />
       <Stack.Screen name="Map" component={Map} options={{ header: () => null }} />

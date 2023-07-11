@@ -37,7 +37,12 @@ function Account() {
   const toProfile = () => {
     navigation.navigate("Profile");
   };
-
+  const toLanguage = () => {
+    navigation.navigate("Language");
+  };
+  const toRoute = () => {
+    navigation.navigate("Route");
+  };
   //theme radio button
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
@@ -101,16 +106,26 @@ function Account() {
             )}
           />
         </View>
-            <View style={[styles.item]}>
-              <List.Item
-                onPress={toStops}
-                title="Stops"
-                titleStyle={styles.itemText}
-                left={() => (
-                <MaterialCommunityIcons style={styles.icon} name="bus-stop-covered" />
-                )}
-                />
-            </View>
+        <View style={styles.item}>
+          <List.Item
+            onPress={toRoute}
+            title="Routes"
+            titleStyle={styles.itemText}
+            left={() => (
+              <MaterialCommunityIcons style={styles.icon} name="transit-detour" />
+            )}
+          />
+        </View>
+        <View style={[styles.item]}>
+          <List.Item
+            onPress={toStops}
+            title="Stops"
+            titleStyle={styles.itemText}
+            left={() => (
+            <MaterialCommunityIcons style={styles.icon} name="bus-stop-covered" />
+            )}
+            />
+        </View>
 
         {/* <View style={styles.item}>
           <List.Item
@@ -138,6 +153,7 @@ function Account() {
       <View>
         <View style={styles.item}>
           <List.Item
+          onPress={toLanguage}
             title="Change Language"
             titleStyle={styles.itemText}
             left={() => (

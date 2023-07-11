@@ -6,7 +6,7 @@ import themeContext from "../config/themeContext";
 
 import Home from './Home';
 import Map from './Map';
-import Route from './Route';
+//import Route from './Route';
 import Account from './Account';
 
 const HomeRoute = () => <Home />;
@@ -16,7 +16,7 @@ const MapRoute = () => {
   return <Map busStop={busStop} />;
 };
 
-const RouteRoute = () => <Route />;
+//const RouteRoute = () => <Route />;
 const AccountRoute = () => <Account />;
 
 const BottomNavBar = () => {
@@ -24,14 +24,14 @@ const BottomNavBar = () => {
   const [routes] = React.useState([
     { key: 'home', title: 'Home', focusedIcon: 'home', unfocusedIcon: 'home-outline'},
     { key: 'map', title: 'Map', focusedIcon: 'map', unfocusedIcon: 'map-outline' },
-    { key: 'route', title: 'Routes', focusedIcon: 'transit-detour', unfocusedIcon: 'transit-detour'},
+    //{ key: 'route', title: 'Routes', focusedIcon: 'transit-detour', unfocusedIcon: 'transit-detour'},
     { key: 'account', title: 'Account', focusedIcon: 'account', unfocusedIcon: 'account-outline' },
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
     map: MapRoute, 
-    route: RouteRoute,
+    //route: RouteRoute,
     account: AccountRoute,
   });
 
