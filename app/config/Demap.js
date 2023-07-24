@@ -4,10 +4,13 @@ import MapView, { Marker, Polyline } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import { getDatabase, ref, onValue, off } from 'firebase/database';
 import { GMAPS_KEY } from '@env';
+import { useRoute } from '@react-navigation/native';
 
 function DeMap() {
   const [busStops, setBusStops] = useState([]);
   const [selectedBusStops, setSelectedBusStops] = useState([]);
+  const route = useRoute(); 
+  const { selectedRoute } = route.params;
 
   useEffect(() => {
     const busStopsRef = ref(getDatabase(), 'busStops/');
@@ -27,6 +30,14 @@ function DeMap() {
     };
   }, []);
 
+  useEffect(() => {
+    if (selectedRoute) {
+      setSelectedBusStops([selectedRoute.startBusStop, selectedRoute.endBusStop]);
+    } else {
+      setSelectedBusStops([]);
+    }
+  }, [selectedRoute]);
+  
   const handleBusStopPress = (busStop) => {
     if (selectedBusStops.length === 2) {
       setSelectedBusStops([busStop]);
@@ -42,8 +53,8 @@ function DeMap() {
         initialRegion={{
           latitude: 15.4064,
           longitude: 73.9971,
-          latitudeDelta: 0.0500,
-          longitudeDelta: 0.0500,
+          latitudeDelta: 0.3300,
+          longitudeDelta: 0.3300,
         }}
       >
         {busStops.map((busStop) => (
@@ -52,8 +63,8 @@ function DeMap() {
             coordinate={{ latitude: busStop.latitude, longitude: busStop.longitude }}
             title={busStop.stopName}
             description={busStop.address}
-            // Use a custom marker icon instead of `pinColor`
-            // e.g., `image={require('./path/to/marker-icon.png')}`
+            // Use a custom marker icon instead of pinColor
+            // e.g., image={require('./path/to/marker-icon.png')}
             pinColor='blue'
             onPress={() => handleBusStopPress(busStop)}
           />
