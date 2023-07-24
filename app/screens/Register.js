@@ -44,9 +44,6 @@ function Register() {
     if (!isValidPassword(password)) {
       Alert.alert('The password must be at least 8 characters long');
       return;
-    }    if (!isvalidNumber(phoneNumber)) {
-      Alert.alert('Invalid Phone Number');
-      return;
     }
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)

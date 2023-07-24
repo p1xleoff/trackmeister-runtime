@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
+import { StyleSheet, View, Text, FlatList, TouchableOpacity, RefreshControl, Alert } from 'react-native';
 import SearchBar from '../components/SearchBar';
 import themeContext from "../config/themeContext";
 import * as Location from 'expo-location';
@@ -14,6 +14,7 @@ function Home () {
   const [nearestStops, setNearestStops] = useState([]);
   const [visibleStops, setVisibleStops] = useState(2);
   const [showMore, setShowMore] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const navigation = useNavigation();
   
@@ -27,8 +28,8 @@ function Home () {
   const toProfile = () => {
     navigation.navigate("Profile")
   };
-  const toRequest = () => {
-    navigation.navigate("Request")
+  const LocationReqInfo = () => {
+    navigation.navigate("LocationReqInfo")
   };
 
   useEffect(() => {
@@ -49,7 +50,12 @@ function Home () {
       const stops = await fetchNearestStops(coords.latitude, coords.longitude);
       setNearestStops(stops);
     } catch (error) {
-      console.error('Error getting user location:', error);
+      Alert.alert('Location Permission Required', 
+      'Please allow location access for the app to work correctly', [
+        {text: 'Allow', onPress: () => getUserLocation(),
+        },
+        {text: 'Cancel'},
+      ]);
     }
   };
   
@@ -143,76 +149,66 @@ function Home () {
     }
   }, [nearestStops, visibleStops]);
 
-  const handleRefresh = () => {
-    getUserLocation();
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await getUserLocation();
+    setRefreshing(false);
     setVisibleStops(1);
   };
 
-  return (
+return (
     <View style={styles.container}>
       <SearchBar />
-      <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text style={styles.topText}>Nearby Stops</Text>
         <TouchableOpacity onPress={toBusStops}>
           <Text style={[styles.floatButton, styles.buttonText]}>See all</Text>
-          </TouchableOpacity>
-        </View>  
+        </TouchableOpacity>
+      </View>
       <View style={styles.listContainer}>
         {nearestStops.length > 0 ? (
-          <>
-            <FlatList
-              data={nearestStops.slice(0, visibleStops)}
-              renderItem={renderStopItem}
-              keyExtractor={(item) => item.stopId.toString()}
-              contentContainerStyle={styles.listContent}
-              initialNumToRender={2}
-            />
-            {showMore ? (
-              visibleStops >= 5 ? (
-                <View>
-                <TouchableOpacity style={styles.listLeftButton} onPress={handleCollapse}>
-                <View style={styles.buttonContent}>
-                  <Text style={styles.buttonText}>Collapse</Text>
-                  <MaterialCommunityIcons name="chevron-up" size={24} color="black" style={styles.icon} />
-                  </View>
-              </TouchableOpacity>
-              </View>
-              ) : (
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.listLeftButton} onPress={handleShowMore}>
-                  <View style={styles.buttonContent}>
-                  <Text style={styles.buttonText}>Show More</Text>
-                  <MaterialCommunityIcons name="chevron-down" size={24} color="black" style={styles.icon} />
-                  </View>
-                </TouchableOpacity>
-                <View style={styles.separator} />
-                <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
-                  <View style={styles.buttonContent}>
-                  <MaterialCommunityIcons name="refresh" size={24} color="black" style={styles.icon} />
-                    <Text style={styles.buttonText}>Refresh</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              )
-            ) : null}
-          </>
+          <FlatList
+            data={nearestStops.slice(0, visibleStops)}
+            renderItem={renderStopItem}
+            keyExtractor={(item) => item.stopId.toString()}
+            contentContainerStyle={styles.listContent}
+            initialNumToRender={2}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+            }
+            ListEmptyComponent={<Text style={styles.text}>Loading nearest stops...</Text>}
+          />
         ) : (
           <Text style={styles.text}>Loading nearest stops...</Text>
         )}
-      </View>
-      <View style={{marginHorizontal: '5%'}}>
-        <TouchableOpacity onPress={toTester}
-          style={{padding: 10, borderRadius: 9, backgroundColor: theme.accent, 
-              justifyContent: 'center', alignItems: 'center',
-              elevation: 9, marginBottom: 10 }}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#fff'}}>Track Bus</Text>
-        </TouchableOpacity>        
-        <TouchableOpacity onPress={toRequest}
-          style={{padding: 10, borderRadius: 9, backgroundColor: theme.accent, 
-              justifyContent: 'center', alignItems: 'center',
-              elevation: 9, marginBottom: 10}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: '#fff'}}>Request</Text>
-        </TouchableOpacity>
+        {showMore ? (
+          visibleStops >= 5 ? (
+            <View>
+              <TouchableOpacity style={styles.listLeftButton} onPress={handleCollapse}>
+                <View style={styles.buttonContent}>
+                  <Text style={styles.buttonText}>Collapse</Text>
+                  <MaterialCommunityIcons name="chevron-up" size={24} color="black" style={styles.icon} />
+                </View>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.listLeftButton} onPress={handleShowMore}>
+                <View style={styles.buttonContent}>
+                  <Text style={styles.buttonText}>Show More</Text>
+                  <MaterialCommunityIcons name="chevron-down" size={24} color="black" style={styles.icon} />
+                </View>
+              </TouchableOpacity>
+              <View style={styles.separator} />
+              <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+                <View style={styles.buttonContent}>
+                  <MaterialCommunityIcons name="refresh" size={24} color="black" style={styles.icon} />
+                  <Text style={styles.buttonText}>Refresh</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          )
+        ) : null}
       </View>
     </View>
   );

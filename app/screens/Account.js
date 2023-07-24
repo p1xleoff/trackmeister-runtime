@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { Avatar, Divider, List, Modal, Portal, Button, Switch } from "react-native-paper";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
@@ -7,7 +7,7 @@ import { EventRegister } from "react-native-event-listeners";
 import { getAuth, signOut } from 'firebase/auth';
 import axios from 'axios';
 import themeContext from "../config/themeContext";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import * as MailComposer from 'expo-mail-composer';
 
 function Account() {
   //theme modal
@@ -22,6 +22,14 @@ function Account() {
   const [aboutVisible, setAboutVisible] = React.useState(false);
   const showAboutModal = () => setAboutVisible(true);
   const hideAboutModal = () => setAboutVisible(false);
+
+  //support email 
+  const supportEmail = () => {
+    MailComposer.composeAsync({
+      recipients: ['trackmeister.go@gmail.com'],
+      subject: 'Support Request',
+    });
+  };
 
   //screen navigation
   const navigation = useNavigation();
@@ -42,6 +50,12 @@ function Account() {
   };
   const toRoute = () => {
     navigation.navigate("Route");
+  };
+  const toBuses = () => {
+    navigation.navigate("BusFleet");
+  };
+  const toStopSelect = () => {
+    navigation.navigate("StopSelect");
   };
   //theme radio button
   const theme = useContext(themeContext);
@@ -108,6 +122,16 @@ function Account() {
         </View>
         <View style={styles.item}>
           <List.Item
+            onPress={toStopSelect}
+            title="Buy Tickets"
+            titleStyle={styles.itemText}
+            left={() => (
+              <MaterialCommunityIcons style={styles.icon} name="ticket-account" />
+            )}
+          />
+        </View>
+        <View style={styles.item}>
+          <List.Item
             onPress={toRoute}
             title="Routes"
             titleStyle={styles.itemText}
@@ -123,6 +147,17 @@ function Account() {
             titleStyle={styles.itemText}
             left={() => (
             <MaterialCommunityIcons style={styles.icon} name="bus-stop-covered" />
+            )}
+            />
+        </View>
+
+        <View style={[styles.item]}>
+          <List.Item
+            onPress={toBuses}
+            title="Buses"
+            titleStyle={styles.itemText}
+            left={() => (
+            <MaterialCommunityIcons style={styles.icon} name="bus-multiple" />
             )}
             />
         </View>
@@ -153,7 +188,7 @@ function Account() {
       <View>
         <View style={styles.item}>
           <List.Item
-          onPress={toLanguage}
+            onPress={toLanguage}
             title="Change Language"
             titleStyle={styles.itemText}
             left={() => (
@@ -162,15 +197,6 @@ function Account() {
           />
         </View>
 
-        <View style={styles.item}>
-          <List.Item
-            title="Support"
-            titleStyle={styles.itemText}
-            left={() => (
-              <MaterialCommunityIcons style={styles.icon} name="help-circle" />
-            )}
-          />
-        </View>
         <View style={styles.item}>
           <Portal>
             <Modal
@@ -205,6 +231,16 @@ function Account() {
           />
         </View>
         <Divider style={{ backgroundColor: "black", height: 1, marginVertical: 10, width: '90%', alignSelf: 'center' }} />
+        <View style={styles.item}>
+          <List.Item
+            onPress={supportEmail}
+            title="Support"
+            titleStyle={styles.itemText}
+            left={() => (
+              <MaterialCommunityIcons style={styles.icon} name="help-circle" />
+            )}
+          />
+        </View>
         <View style={styles.item}>
           <Portal>
             <Modal

@@ -43,7 +43,7 @@ const Language = () => {
         {renderLanguageOption('English')}
         {/* Add more language options here */}
       </View>
-      <View style={styles.buttonConatainer}>
+      <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => console.log(selectedLanguage)}>
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
@@ -90,10 +90,10 @@ const getStyles = (theme) =>
   selectedLanguageOptionText: {
     color: '#fff',
   },
-  buttonConatainer: {
+  buttonContainer: {
     flex: 2,
     position: 'absolute',
-    bottom: 50,
+    bottom: 20,
     alignSelf: 'center',
     width: "90%",
   },
@@ -103,7 +103,7 @@ const getStyles = (theme) =>
     borderRadius: 9,
     alignItems: 'center',
     backgroundColor: theme.accent,
-    paddingVertical: '4%',
+    paddingVertical: '3%',
     elevation: 10,
   },
   buttonText: {

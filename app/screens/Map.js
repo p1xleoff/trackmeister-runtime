@@ -19,13 +19,14 @@ const MapScreen = ({ route }) => {
   const [busStops, setBusStops] = useState([]);
   const [selectedBusStop, setSelectedBusStop] = useState(null);
   const [busRouteCoordinates, setBusRouteCoordinates] = useState([]);
+  const [selectedBusStops, setSelectedBusStops] = useState([]);
 
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
 
   const [showTrackBusButton, setShowTrackBusButton] = useState(false);
   const [responseData, setResponseData] = useState(null);
-  
+
   const makeApiRequest = async () => {
     try {
       const timestamp = new Date().getTime();
@@ -103,11 +104,6 @@ const MapScreen = ({ route }) => {
 
   const closestBus = findClosestBus();
 
-  const handleBusStopPress = (busStop) => {
-    setSelectedBusStop(busStop);
-    setShowTrackBusButton(true);
-  };
-
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -171,6 +167,16 @@ const MapScreen = ({ route }) => {
     }
   };
 
+  const handleBusStopPress = (busStop) => {
+    if (selectedBusStops.length === 2) {
+      setSelectedBusStops([busStop]);
+    } else {
+      setSelectedBusStops([...selectedBusStops, busStop]);
+    }
+    setSelectedBusStop(busStop);
+    setShowTrackBusButton(true);
+  };
+
   return (
     <View style={styles.container}>
     {userLocation && mapRegion && (
@@ -183,6 +189,7 @@ const MapScreen = ({ route }) => {
         showsMyLocationButton={false}
         userInterfaceStyle='dark'
       >
+        {/* show bus stop markers */}
         {busStops.map((stop) => (
           <Marker
             key={stop.stopId}
@@ -196,25 +203,24 @@ const MapScreen = ({ route }) => {
             onPress={() => handleBusStopPress(stop)}
           />
         ))}
-        {selectedBusStop && (
+
+        {/* show route between 2 bus stops */}
+        {selectedBusStops.length >= 2 && (
           <MapViewDirections
             origin={{
-              latitude: closestBus ? closestBus.Latitude : userLocation.latitude,
-              longitude: closestBus ? closestBus.Longitude : userLocation.longitude,
+              latitude: selectedBusStops[0].latitude,
+              longitude: selectedBusStops[0].longitude,
             }}
             destination={{
-              latitude: selectedBusStop.latitude,
-              longitude: selectedBusStop.longitude,
+              latitude: selectedBusStops[1].latitude,
+              longitude: selectedBusStops[1].longitude,
             }}
             apikey={GMAPS_KEY}
             strokeWidth={4}
             strokeColor="red"
-            onReady={(result) => {
-              setBusRouteCoordinates(result.coordinates);
-            }}
           />
         )}
-
+        {/* show a route between bus and the selected bus stop  */}
         {busRouteCoordinates.length > 0 && (
           <Polyline
             coordinates={busRouteCoordinates}
@@ -222,9 +228,12 @@ const MapScreen = ({ route }) => {
             strokeColor="blue"
           />
         )}
-          {closestBus && (
-            <Marker
-              coordinate={{
+        {/* show the closest bus to the bus stop on the map */}
+        {closestBus && (
+          <Marker
+            title={closestBus.VehicleRegNo}
+            description={'Updated: ' + closestBus.TrackingDateTime}
+            coordinate={{
                 latitude: closestBus.Latitude,
                 longitude: closestBus.Longitude,
               }}
@@ -234,6 +243,7 @@ const MapScreen = ({ route }) => {
           )}
       </MapView>
     )}
+
       {!userLocation && <ActivityIndicator style={styles.loader} size="large" color={theme.accent} />}
       <View style={styles.searchBarContainer}>
         <View style={styles.searchBar}>
@@ -249,12 +259,11 @@ const MapScreen = ({ route }) => {
           </View>
         </TouchableOpacity>
       )}
+      </View>
+      <View style={[styles.buttonContainer, {alignSelf: 'flex-end', right: 5, bottom: 50}]}>
         <TouchableOpacity style={styles.button} onPress={focusUserLocation}>
-          <View style={styles.buttonContent}>
-            <MaterialCommunityIcons style={styles.icon} name="crosshairs-gps" />
-            <Text style={styles.buttonText}>Focus On User Location</Text>
-          </View>
-        </TouchableOpacity>
+            <MaterialCommunityIcons color={'#fff'} size={22} name="crosshairs-gps" />
+         </TouchableOpacity>
       </View>
     </View>
   );
@@ -277,7 +286,7 @@ const getStyles = (theme) => {
     },
     buttonContainer: {
       position: 'absolute',
-      bottom: 10,
+      bottom: 2,
       alignSelf: 'center',
       justifyContent: 'center',
       alignItems: 'center',
