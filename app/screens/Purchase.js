@@ -14,6 +14,9 @@ const PurchaseScreen = ({ route }) => {
   const toStopSelect = () => {
     navigation.navigate("StopSelect")
   };
+  const toPayment = () => {
+    navigation.navigate("Payment")
+  };
   const handleTicketPurchase = () => {
     // Calculate the total ticket price based on the number of tickets selected
     const totalTicketPrice = ticketPrice * numTickets;
@@ -69,6 +72,9 @@ const PurchaseScreen = ({ route }) => {
       </TouchableOpacity>
       <TouchableOpacity onPress={toStopSelect} style={styles.cancelButton}>
         <Text style={styles.buttonText}>Cancel</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={toPayment} style={[styles.cancelButton, {bottom: 110}]}>
+        <Text style={styles.buttonText}>Pay</Text>
       </TouchableOpacity>
     </View>
   );

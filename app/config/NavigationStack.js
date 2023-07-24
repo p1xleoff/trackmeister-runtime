@@ -1,6 +1,6 @@
 import React from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import { StripeProvider } from "@stripe/stripe-react-native";
 import { Provider as PaperProvider } from 'react-native-paper';
 
 import Landing from '../screens/Landing';
@@ -26,12 +26,14 @@ import BusFleet from '../screens/BusFleet';
 import LocationReqInfo from './LocationReqInfo'
 import Purchase from '../screens/Purchase';
 import StopSelect from '../screens/StopSelect';
+import Payment from '../screens/Payment';
 
 const Stack = createStackNavigator();
 
 export const NavigationStack = () => {
   return (
     <PaperProvider>
+      <StripeProvider publishableKey="pk_test_51NWLOgSGImYjEZiO3VpZDXMd6r7TQN1yHNdsyzoCly63ftLrtjv1ZmTjj7eroVjzEKnLhJVqA7ysgBqoPpTNronL00qoBwX6t7">
     <Stack.Navigator>
       <Stack.Screen name="pxInit" component={pxInit} options={{ header: () => null }}/>
       <Stack.Screen name="Landing" component={Landing} options={{ header: () => null }} />
@@ -45,6 +47,7 @@ export const NavigationStack = () => {
       <Stack.Screen name="Stops" component={Stops} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Payment" component={Payment} />
       <Stack.Screen name="Purchase" component={Purchase} options={{ headerTitle: 'Buy Ticket' }} />
       <Stack.Screen name="StopSelect" component={StopSelect} options={{ headerTitle: 'Select Stops' }} />
       <Stack.Screen name="Route" component={Route} options={{ title: 'Routes'}} />
@@ -57,6 +60,7 @@ export const NavigationStack = () => {
       <Stack.Screen name="TripPlanner" component={TripPlanner} options={{ headerTitle: 'Trip Planner' }} />
       <Stack.Screen name="Welcome" component={Welcome} options={{ header: () => null }} />
     </Stack.Navigator>
+    </StripeProvider>
     </PaperProvider>
   );
 };
