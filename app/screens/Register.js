@@ -66,9 +66,6 @@ function Register() {
   const isValidPassword = (password) => {
     return password.length >= 6;
   };
-  const isvalidNumber = (phoneNumber) => {
-    return phoneNumber.length == 10;
-  }
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>

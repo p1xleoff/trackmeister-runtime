@@ -10,6 +10,7 @@ const PurchaseScreen = ({ route }) => {
 
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
+  
   const navigation = useNavigation();
   const toStopSelect = () => {
     navigation.navigate("StopSelect")
