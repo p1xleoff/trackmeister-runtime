@@ -23,7 +23,24 @@ const ExpiredTickets = () => {
   const styles = getStyles(theme);
 
   return (
-    <View style={styles.container} />
+    <View style={styles.container}>
+    
+      <View style={styles.ticket}>
+        <View>
+          <Text style={styles.title}>Single Journey Ticket</Text>
+          <Text style={styles.text}>GA - 03 - X - 1337</Text>
+          <Text style={styles.text}>Old Bus Stand - Ponda</Text>
+          <Text style={styles.text}>KTC Bus Stand - Panaji</Text>
+          <Text style={styles.text}>1 Adult</Text>
+          <Text style={styles.text}>₹30 Total Fair Paid</Text>
+        </View>
+        <Divider style={{ marginVertical: 10 }} />
+        <View style={styles.qr}>
+          <Text style={styles.qrDate}>27 March 2023, 03:33:33 PM</Text>
+          <Image source={require("../assets/qr.png")} />
+        </View>
+      </View>
+    </View>
   );
 };
 

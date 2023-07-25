@@ -3,7 +3,7 @@ import { View, StyleSheet, Dimensions } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import themeContext from "../config/themeContext";
 import BusStops from '../data/BusStops'
-import Demap from '../config/Demap'
+import StopMap from '../config/StopMap'
 
 const initialLayout = { width: Dimensions.get('window').width };
 
@@ -18,7 +18,7 @@ function Stops () {
 
   const renderScene = SceneMap({
     list: BusStops,
-    map: Demap,
+    map: StopMap,
   });
 
   const renderTabBar = (props) => (
