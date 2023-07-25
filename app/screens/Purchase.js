@@ -68,14 +68,14 @@ const PurchaseScreen = ({ route }) => {
         <Text style={styles.ticketPrice}>Total Price: ₹<Text style={styles.totalPrice}>{ticketPrice * numTickets}</Text></Text>
       </View>
       {/* button to proceed with the ticket purchase */}
-      <TouchableOpacity onPress={handleTicketPurchase} style={styles.buyButton}>
+      {/* <TouchableOpacity onPress={handleTicketPurchase} style={styles.buyButton}>
         <Text style={styles.buttonText}>Buy Ticket</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <TouchableOpacity onPress={toStopSelect} style={styles.cancelButton}>
         <Text style={styles.buttonText}>Cancel</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={toPayment} style={[styles.cancelButton, {bottom: 110}]}>
-        <Text style={styles.buttonText}>Pay</Text>
+      <TouchableOpacity onPress={toPayment} style={styles.buyButton}>
+        <Text style={styles.buttonText}>Proceed to Payment</Text>
       </TouchableOpacity>
     </View>
   );
