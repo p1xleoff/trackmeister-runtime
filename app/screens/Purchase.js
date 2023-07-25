@@ -10,23 +10,23 @@ const PurchaseScreen = ({ route }) => {
 
   const theme = useContext(themeContext);
   const styles = getStyles(theme);
-  
   const navigation = useNavigation();
   const toStopSelect = () => {
     navigation.navigate("StopSelect")
   };
   const toPayment = () => {
-    navigation.navigate("Payment")
+    const ticketData = {
+      boardingStop: boardingStop,
+      alightingStop: alightingStop,
+      ticketPrice: ticketPrice,
+      numTickets: numTickets,
+      totalTicketPrice: ticketPrice * numTickets,
+    }
+    navigation.navigate("Payment", { ticketData })
   };
   const handleTicketPurchase = () => {
     // Calculate the total ticket price based on the number of tickets selected
     const totalTicketPrice = ticketPrice * numTickets;
-
-    // Add your logic to handle the ticket purchase here.
-    // This function will be triggered when the "Buy Tickets" button is pressed.
-    // You can perform actions like displaying a success message, storing the ticket data, or processing the payment.
-    // For this example, we'll just log the ticket data to the console.
-
     const ticketData = {
       boardingStop: boardingStop,
       alightingStop: alightingStop,
@@ -80,7 +80,6 @@ const PurchaseScreen = ({ route }) => {
     </View>
   );
 };
-
 const getStyles = (theme) =>
   StyleSheet.create({
   container: {

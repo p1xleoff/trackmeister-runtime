@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { View, Text, StyleSheet, TextInput, Button, Alert } from "react-native";
-import { CardField, useConfirmPayment } from "@stripe/stripe-react-native";
+import { CardForm, CardFormProps, CardFormView, CardField, useConfirmPayment } from "@stripe/stripe-react-native";
 import themeContext from "../config/themeContext";
 import { useNavigation } from '@react-navigation/native';
 
@@ -75,7 +75,7 @@ const Payment = (props) => {
         onCardChange={(cardDetails) => {
           setCardDetails(cardDetails);
         }}
-      />
+      /> 
       <Button onPress={handlePayPress} title="Pay" disabled={loading} />
     </View>
   );
