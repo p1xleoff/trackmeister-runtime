@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, useWindowDimensions, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, useWindowDimensions, StyleSheet, Text, TouchableOpacity, Divider, Image } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import themeContext from "../config/themeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -24,7 +24,6 @@ const ExpiredTickets = () => {
 
   return (
     <View style={styles.container}>
-    
       <View style={styles.ticket}>
         <View>
           <Text style={styles.title}>Single Journey Ticket</Text>
@@ -34,7 +33,10 @@ const ExpiredTickets = () => {
           <Text style={styles.text}>1 Adult</Text>
           <Text style={styles.text}>₹30 Total Fair Paid</Text>
         </View>
-        <Divider style={{ marginVertical: 10 }} />
+        <View style={styles.dividerContainer}>
+          {/* Use a custom view for the divider */}
+          <View style={styles.divider} />
+        </View>
         <View style={styles.qr}>
           <Text style={styles.qrDate}>27 March 2023, 03:33:33 PM</Text>
           <Image source={require("../assets/qr.png")} />
@@ -130,5 +132,23 @@ const getStyles = (theme) =>
       fontSize: 24,
       color: "#fff",
       paddingRight: 5,
+    },
+    ticket: {
+      borderColor: "gray",
+      borderWidth: 1,
+      marginHorizontal: 10,
+      padding: 10,
+      borderRadius: 9,
+      marginVertical: 10,
+      color: theme.color,
+      backgroundColor: theme.background,
+    },
+    qr: {
+      alignItems: "center",
+      color: theme.color,
+    },
+    qrDate: {
+    marginBottom: 10,
+    color: theme.color,
     }
   });
